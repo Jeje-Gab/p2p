@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* CS2 Rarity Colors */
+.rarity-consumer-grade {
+  @apply bg-gray-400 text-white;
+}
+
+.rarity-industrial-grade {
+  @apply bg-blue-400 text-white;
+}
+
+.rarity-mil-spec-grade {
+  @apply bg-blue-600 text-white;
+}
+
+.rarity-restricted {
+  @apply bg-purple-500 text-white;
+}
+
+.rarity-classified {
+  @apply bg-purple-700 text-white;
+}
+
+.rarity-covert {
+  @apply bg-red-600 text-white;
+}
+
+.rarity-exceedingly-rare {
+  @apply bg-yellow-500 text-white;
+}
