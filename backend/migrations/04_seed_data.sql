@@ -1,7 +1,7 @@
 -- Seed data: Insert sample skins for testing
 -- This provides demo data for the CS2 skin trading platform
 
-INSERT INTO skins (name, weapon_type, rarity, float_value, image_url) VALUES
+INSERT INTO p2p.skins (name, weapon_type, rarity, float_value, image_url) VALUES
     ('Redline', 'AK-47', 'Classified', 0.15, 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEm1Rd6dd2j6eQ9N2t2wK3-UM-YGrzJYSSdlQ6Zw6DrwTrxOe9gJC9vZ-Y'),
     ('Asiimov', 'AWP', 'Covert', 0.42, 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17PLfYQJD_9W7m5a0mvLwOq7c2D1U6dNo2-ySpI2jiVfnqRBtYmD7IYadc1A9ZF2D_VHolent0ZG-uZ_BzXVhvSc8pSGKDjfCLNM'),
     ('Howl', 'M4A4', 'Exceedingly Rare', 0.07, 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJQJD7eO6nYeDg7miYr7VlWgIv8Yp3uzA8dyh0VLjqERta2r6LYKVdFc-NAvW-wLvyL3u08e46snXiSw0KeFyxuU'),
@@ -14,4 +14,4 @@ INSERT INTO skins (name, weapon_type, rarity, float_value, image_url) VALUES
     ('Neo-Noir', 'Desert Eagle', 'Covert', 0.28, 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposr-kLAtl7PLZTjtO7dGzh7-HnvD8J_WEkDMEucEp2L2To4qtiVK1_RBoMDr7JoWcJw47ZFDYrlLrw-bsg8ftu8zAzSA2uXNztyiInETmi05SLrs4FRvK-YI')
 ON CONFLICT DO NOTHING;
 
-COMMENT ON TABLE skins IS 'Sample CS2 skins for demo purposes - in production, this would integrate with Steam API';
+COMMENT ON TABLE p2p.skins IS 'Sample CS2 skins for demo purposes - in production, this would integrate with Steam API';

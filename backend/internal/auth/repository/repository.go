@@ -23,7 +23,7 @@ func New(db *sqlx.DB) *repository {
 // CreateUser inserts a new user into the database
 func (r *repository) CreateUser(ctx context.Context, user *entity.User) error {
 	query := `
-		INSERT INTO users (email, password_hash, steam_id, role, twofa_enabled, created_at, updated_at)
+		INSERT INTO p2p.users (email, password_hash, steam_id, role, twofa_enabled, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id
 	`
@@ -54,7 +54,7 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (*entity.
 	var user entity.User
 	query := `
 		SELECT id, email, password_hash, steam_id, twofa_secret, twofa_enabled, role, created_at, updated_at
-		FROM users
+		FROM p2p.users
 		WHERE email = $1 AND deleted_at IS NULL
 	`
 
@@ -74,7 +74,7 @@ func (r *repository) GetUserByID(ctx context.Context, id int64) (*entity.User, e
 	var user entity.User
 	query := `
 		SELECT id, email, password_hash, steam_id, twofa_secret, twofa_enabled, role, created_at, updated_at
-		FROM users
+		FROM p2p.users
 		WHERE id = $1 AND deleted_at IS NULL
 	`
 
@@ -94,7 +94,7 @@ func (r *repository) GetUserBySteamID(ctx context.Context, steamID string) (*ent
 	var user entity.User
 	query := `
 		SELECT id, email, password_hash, steam_id, twofa_secret, twofa_enabled, role, created_at, updated_at
-		FROM users
+		FROM p2p.users
 		WHERE steam_id = $1 AND deleted_at IS NULL
 	`
 
@@ -112,7 +112,7 @@ func (r *repository) GetUserBySteamID(ctx context.Context, steamID string) (*ent
 // UpdateUser updates user information
 func (r *repository) UpdateUser(ctx context.Context, user *entity.User) error {
 	query := `
-		UPDATE users
+		UPDATE p2p.users
 		SET email = $1, password_hash = $2, steam_id = $3, twofa_secret = $4,
 		    twofa_enabled = $5, role = $6, updated_at = $7
 		WHERE id = $8 AND deleted_at IS NULL
@@ -150,7 +150,7 @@ func (r *repository) UpdateUser(ctx context.Context, user *entity.User) error {
 // Enable2FA enables 2FA for a user
 func (r *repository) Enable2FA(ctx context.Context, userID int64, secret string) error {
 	query := `
-		UPDATE users
+		UPDATE p2p.users
 		SET twofa_secret = $1, twofa_enabled = true, updated_at = $2
 		WHERE id = $3 AND deleted_at IS NULL
 	`
@@ -175,7 +175,7 @@ func (r *repository) Enable2FA(ctx context.Context, userID int64, secret string)
 // Disable2FA disables 2FA for a user
 func (r *repository) Disable2FA(ctx context.Context, userID int64) error {
 	query := `
-		UPDATE users
+		UPDATE p2p.users
 		SET twofa_secret = NULL, twofa_enabled = false, updated_at = $1
 		WHERE id = $2 AND deleted_at IS NULL
 	`
@@ -200,7 +200,7 @@ func (r *repository) Disable2FA(ctx context.Context, userID int64) error {
 // CreateLoginAttempt records a login attempt (for brute force tracking)
 func (r *repository) CreateLoginAttempt(ctx context.Context, attempt *entity.LoginAttempt) error {
 	query := `
-		INSERT INTO login_attempts (user_id, ip_address, success, created_at)
+		INSERT INTO p2p.login_attempts (user_id, ip_address, success, created_at)
 		VALUES ($1, $2, $3, $4)
 		RETURNING id
 	`
@@ -227,8 +227,8 @@ func (r *repository) CreateLoginAttempt(ctx context.Context, attempt *entity.Log
 func (r *repository) CountFailedAttempts(ctx context.Context, email string, sinceMinutes int) (int, error) {
 	query := `
 		SELECT COUNT(*)
-		FROM login_attempts la
-		JOIN users u ON la.user_id = u.id
+		FROM p2p.login_attempts la
+		JOIN p2p.users u ON la.user_id = u.id
 		WHERE u.email = $1
 		  AND la.success = false
 		  AND la.created_at > NOW() - INTERVAL '1 minute' * $2
@@ -248,7 +248,7 @@ func (r *repository) CountFailedAttempts(ctx context.Context, email string, sinc
 func (r *repository) CountFailedAttemptsByIP(ctx context.Context, ip string, sinceMinutes int) (int, error) {
 	query := `
 		SELECT COUNT(*)
-		FROM login_attempts
+		FROM p2p.login_attempts
 		WHERE ip_address = $1
 		  AND success = false
 		  AND created_at > NOW() - INTERVAL '1 minute' * $2

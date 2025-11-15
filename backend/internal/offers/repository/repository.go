@@ -21,7 +21,7 @@ func New(db *sqlx.DB) *repository {
 
 func (r *repository) Create(ctx context.Context, offer *entity.Offer) error {
 	query := `
-		INSERT INTO offers (owner_id, skin_offered_id, skin_requested_id, status, created_at, updated_at)
+		INSERT INTO p2p.offers (owner_id, skin_offered_id, skin_requested_id, status, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id
 	`
@@ -53,10 +53,10 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*entity.OfferWithDe
 			s2.id as "skin_requested.id", s2.name as "skin_requested.name",
 			s2.weapon_type as "skin_requested.weapon_type", s2.rarity as "skin_requested.rarity",
 			s2.image_url as "skin_requested.image_url"
-		FROM offers o
-		JOIN users u ON o.owner_id = u.id
-		JOIN skins s1 ON o.skin_offered_id = s1.id
-		JOIN skins s2 ON o.skin_requested_id = s2.id
+		FROM p2p.offers o
+		JOIN p2p.users u ON o.owner_id = u.id
+		JOIN p2p.skins s1 ON o.skin_offered_id = s1.id
+		JOIN p2p.skins s2 ON o.skin_requested_id = s2.id
 		WHERE o.id = $1 AND o.deleted_at IS NULL
 	`
 
@@ -82,10 +82,10 @@ func (r *repository) List(ctx context.Context, status string, limit, offset int)
 			s2.id as "skin_requested.id", s2.name as "skin_requested.name",
 			s2.weapon_type as "skin_requested.weapon_type", s2.rarity as "skin_requested.rarity",
 			s2.image_url as "skin_requested.image_url"
-		FROM offers o
-		JOIN users u ON o.owner_id = u.id
-		JOIN skins s1 ON o.skin_offered_id = s1.id
-		JOIN skins s2 ON o.skin_requested_id = s2.id
+		FROM p2p.offers o
+		JOIN p2p.users u ON o.owner_id = u.id
+		JOIN p2p.skins s1 ON o.skin_offered_id = s1.id
+		JOIN p2p.skins s2 ON o.skin_requested_id = s2.id
 		WHERE o.deleted_at IS NULL
 	`
 
@@ -122,10 +122,10 @@ func (r *repository) ListByUser(ctx context.Context, userID int64, limit, offset
 			s2.id as "skin_requested.id", s2.name as "skin_requested.name",
 			s2.weapon_type as "skin_requested.weapon_type", s2.rarity as "skin_requested.rarity",
 			s2.image_url as "skin_requested.image_url"
-		FROM offers o
-		JOIN users u ON o.owner_id = u.id
-		JOIN skins s1 ON o.skin_offered_id = s1.id
-		JOIN skins s2 ON o.skin_requested_id = s2.id
+		FROM p2p.offers o
+		JOIN p2p.users u ON o.owner_id = u.id
+		JOIN p2p.skins s1 ON o.skin_offered_id = s1.id
+		JOIN p2p.skins s2 ON o.skin_requested_id = s2.id
 		WHERE o.owner_id = $1 AND o.deleted_at IS NULL
 		ORDER BY o.created_at DESC
 		LIMIT $2 OFFSET $3
@@ -140,7 +140,7 @@ func (r *repository) ListByUser(ctx context.Context, userID int64, limit, offset
 }
 
 func (r *repository) UpdateStatus(ctx context.Context, id int64, status string) error {
-	query := `UPDATE offers SET status = $1, updated_at = $2 WHERE id = $3 AND deleted_at IS NULL`
+	query := `UPDATE p2p.offers SET status = $1, updated_at = $2 WHERE id = $3 AND deleted_at IS NULL`
 
 	result, err := r.db.ExecContext(ctx, query, status, time.Now(), id)
 	if err != nil {

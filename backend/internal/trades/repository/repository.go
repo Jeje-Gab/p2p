@@ -21,7 +21,7 @@ func New(db *sqlx.DB) *repository {
 
 func (r *repository) Create(ctx context.Context, trade *entity.Trade) error {
 	query := `
-		INSERT INTO trades (offer_id, from_user_id, to_user_id, executed_at)
+		INSERT INTO p2p.trades (offer_id, from_user_id, to_user_id, executed_at)
 		VALUES ($1, $2, $3, $4)
 		RETURNING id
 	`
@@ -46,9 +46,9 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*entity.TradeWithDe
 			t.id, t.offer_id, t.from_user_id, t.to_user_id, t.executed_at,
 			u1.email as from_user_email,
 			u2.email as to_user_email
-		FROM trades t
-		JOIN users u1 ON t.from_user_id = u1.id
-		JOIN users u2 ON t.to_user_id = u2.id
+		FROM p2p.trades t
+		JOIN p2p.users u1 ON t.from_user_id = u1.id
+		JOIN p2p.users u2 ON t.to_user_id = u2.id
 		WHERE t.id = $1
 	`
 
@@ -69,9 +69,9 @@ func (r *repository) ListByUser(ctx context.Context, userID int64, limit, offset
 			t.id, t.offer_id, t.from_user_id, t.to_user_id, t.executed_at,
 			u1.email as from_user_email,
 			u2.email as to_user_email
-		FROM trades t
-		JOIN users u1 ON t.from_user_id = u1.id
-		JOIN users u2 ON t.to_user_id = u2.id
+		FROM p2p.trades t
+		JOIN p2p.users u1 ON t.from_user_id = u1.id
+		JOIN p2p.users u2 ON t.to_user_id = u2.id
 		WHERE t.from_user_id = $1 OR t.to_user_id = $1
 		ORDER BY t.executed_at DESC
 		LIMIT $2 OFFSET $3
@@ -91,9 +91,9 @@ func (r *repository) List(ctx context.Context, limit, offset int) ([]entity.Trad
 			t.id, t.offer_id, t.from_user_id, t.to_user_id, t.executed_at,
 			u1.email as from_user_email,
 			u2.email as to_user_email
-		FROM trades t
-		JOIN users u1 ON t.from_user_id = u1.id
-		JOIN users u2 ON t.to_user_id = u2.id
+		FROM p2p.trades t
+		JOIN p2p.users u1 ON t.from_user_id = u1.id
+		JOIN p2p.users u2 ON t.to_user_id = u2.id
 		ORDER BY t.executed_at DESC
 		LIMIT $1 OFFSET $2
 	`

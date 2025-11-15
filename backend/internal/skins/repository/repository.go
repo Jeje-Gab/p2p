@@ -21,7 +21,7 @@ func New(db *sqlx.DB) *repository {
 func (r *repository) ListSkins(ctx context.Context, limit, offset int) ([]entity.Skin, error) {
 	query := `
 		SELECT id, name, weapon_type, rarity, float_value, image_url, created_at, updated_at
-		FROM skins
+		FROM p2p.skins
 		WHERE deleted_at IS NULL
 		ORDER BY created_at DESC
 		LIMIT $1 OFFSET $2
@@ -38,7 +38,7 @@ func (r *repository) ListSkins(ctx context.Context, limit, offset int) ([]entity
 func (r *repository) GetSkinByID(ctx context.Context, id int64) (*entity.Skin, error) {
 	query := `
 		SELECT id, name, weapon_type, rarity, float_value, image_url, created_at, updated_at
-		FROM skins
+		FROM p2p.skins
 		WHERE id = $1 AND deleted_at IS NULL
 	`
 
@@ -60,8 +60,8 @@ func (r *repository) GetUserSkins(ctx context.Context, userID int64) ([]entity.U
 			s.id as "skin.id", s.name as "skin.name", s.weapon_type as "skin.weapon_type",
 			s.rarity as "skin.rarity", s.float_value as "skin.float_value", s.image_url as "skin.image_url",
 			s.created_at as "skin.created_at", s.updated_at as "skin.updated_at"
-		FROM user_skins us
-		JOIN skins s ON us.skin_id = s.id
+		FROM p2p.user_skins us
+		JOIN p2p.skins s ON us.skin_id = s.id
 		WHERE us.user_id = $1 AND s.deleted_at IS NULL
 		ORDER BY us.created_at DESC
 	`
@@ -76,10 +76,10 @@ func (r *repository) GetUserSkins(ctx context.Context, userID int64) ([]entity.U
 
 func (r *repository) AddSkinToUser(ctx context.Context, userID, skinID int64, quantity int) error {
 	query := `
-		INSERT INTO user_skins (user_id, skin_id, quantity)
+		INSERT INTO p2p.user_skins (user_id, skin_id, quantity)
 		VALUES ($1, $2, $3)
 		ON CONFLICT (user_id, skin_id)
-		DO UPDATE SET quantity = user_skins.quantity + $3, updated_at = NOW()
+		DO UPDATE SET quantity = p2p.user_skins.quantity + $3, updated_at = NOW()
 	`
 
 	if _, err := r.db.ExecContext(ctx, query, userID, skinID, quantity); err != nil {
@@ -91,7 +91,7 @@ func (r *repository) AddSkinToUser(ctx context.Context, userID, skinID int64, qu
 
 func (r *repository) RemoveSkinFromUser(ctx context.Context, userID, skinID int64, quantity int) error {
 	query := `
-		UPDATE user_skins
+		UPDATE p2p.user_skins
 		SET quantity = quantity - $3, updated_at = NOW()
 		WHERE user_id = $1 AND skin_id = $2 AND quantity >= $3
 	`
@@ -107,14 +107,14 @@ func (r *repository) RemoveSkinFromUser(ctx context.Context, userID, skinID int6
 	}
 
 	// Delete if quantity becomes 0
-	deleteQuery := `DELETE FROM user_skins WHERE user_id = $1 AND skin_id = $2 AND quantity <= 0`
+	deleteQuery := `DELETE FROM p2p.user_skins WHERE user_id = $1 AND skin_id = $2 AND quantity <= 0`
 	_, _ = r.db.ExecContext(ctx, deleteQuery, userID, skinID)
 
 	return nil
 }
 
 func (r *repository) HasSkin(ctx context.Context, userID, skinID int64) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM user_skins WHERE user_id = $1 AND skin_id = $2 AND quantity > 0)`
+	query := `SELECT EXISTS(SELECT 1 FROM p2p.user_skins WHERE user_id = $1 AND skin_id = $2 AND quantity > 0)`
 
 	var exists bool
 	if err := r.db.GetContext(ctx, &exists, query, userID, skinID); err != nil {
