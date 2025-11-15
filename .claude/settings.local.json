@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(go mod tidy:*)"
+      "Bash(go mod tidy:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "Bash(docker ps:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 3256 -Force\")",
+      "Bash(go run:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(psql:*)"
     ],
     "deny": [],
     "ask": []

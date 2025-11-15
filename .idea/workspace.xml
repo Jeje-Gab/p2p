@@ -5,53 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cervejeira.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cervejaria-bruno/bruno.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cervejaria-bruno/environments/cervejaria.bru" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cervejaria-bruno/healthz/folder.bru" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cervejaria-bruno/healthz/healthz.bru" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cervejaria-bruno/temperature/createCeva.bru" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cervejaria-bruno/temperature/folder.bru" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/server/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/server/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/delivery/http/handlers.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/delivery/http/routes.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/analyzer.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/by_id.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/create.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/delete.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/list.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/repository/update.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/analyzer.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/by_id.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/create.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/delete.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/list.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/update.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/temperature/usecase/usecase.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/migrations/01_init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/migrations/01_init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/migrations/02_seed.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/pkg/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pkg/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pkg/dbx/autotx.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pkg/txctx/txctx.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/_common.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/analyze.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/api_demo.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/create_style.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/delete_style.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/get_style.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/health.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/list_styles.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/scripts/update_style.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,9 +23,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="35RRtMiKJz4FREhuzCxdA1ThV06" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -72,6 +33,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Go Build.build.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
@@ -80,12 +42,33 @@
     "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "C:/work/p2p",
+    "last_opened_file_path": "C:/work/p2p/frontend",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\work\p2p\frontend" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="build" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="p2p" />
+      <working_directory value="$PROJECT_DIR$/backend/dist" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$/backend/cmd/server" />
+      <filePath value="$PROJECT_DIR$" />
+      <output_directory value="$PROJECT_DIR$/backend/dist" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

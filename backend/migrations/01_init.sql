@@ -1,5 +1,5 @@
 -- garante schema
-CREATE SCHEMA IF NOT EXISTS project;
+CREATE SCHEMA IF NOT EXISTS p2p;
 
 -- tabela
 CREATE TABLE IF NOT EXISTS project.beer_style
