@@ -102,7 +102,7 @@ func (h *Handler) Login(c echo.Context) error {
 
 	ip := c.RealIP()
 
-	requiresTwoFA, token, err := h.usecase.Login(c.Request().Context(), req.Email, req.Password, ip)
+	requiresTwoFA, token, user, err := h.usecase.Login(c.Request().Context(), req.Email, req.Password, ip)
 	if err != nil {
 		statusCode := http.StatusUnauthorized
 		message := "Invalid credentials"
@@ -134,6 +134,15 @@ func (h *Handler) Login(c echo.Context) error {
 		Message: "Login successful",
 		Data: map[string]interface{}{
 			"token": token,
+			"user": map[string]interface{}{
+				"id":            user.ID,
+				"email":         user.Email,
+				"steam_id":      user.SteamID,
+				"role":          user.Role,
+				"twofa_enabled": user.TwoFAEnabled,
+				"created_at":    user.CreatedAt,
+				"updated_at":    user.UpdatedAt,
+			},
 		},
 	})
 }
@@ -152,7 +161,7 @@ func (h *Handler) Verify2FA(c echo.Context) error {
 
 	ip := c.RealIP()
 
-	token, err := h.usecase.Verify2FA(c.Request().Context(), req.Email, req.Code, ip)
+	token, user, err := h.usecase.Verify2FA(c.Request().Context(), req.Email, req.Code, ip)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, APIResponse{
 			Success: false,
@@ -165,6 +174,15 @@ func (h *Handler) Verify2FA(c echo.Context) error {
 		Message: "2FA verification successful",
 		Data: map[string]interface{}{
 			"token": token,
+			"user": map[string]interface{}{
+				"id":            user.ID,
+				"email":         user.Email,
+				"steam_id":      user.SteamID,
+				"role":          user.Role,
+				"twofa_enabled": user.TwoFAEnabled,
+				"created_at":    user.CreatedAt,
+				"updated_at":    user.UpdatedAt,
+			},
 		},
 	})
 }

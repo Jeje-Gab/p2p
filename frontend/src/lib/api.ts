@@ -25,9 +25,18 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle errors
+// Response interceptor to handle errors and unwrap data
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('API Response (before unwrap):', response.data);
+    // Unwrap the backend's standard response format { success, message, data }
+    // Extract the actual data from response.data.data
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      response.data = response.data.data;
+      console.log('API Response (after unwrap):', response.data);
+    }
+    return response;
+  },
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {

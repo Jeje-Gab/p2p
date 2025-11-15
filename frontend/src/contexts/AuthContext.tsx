@@ -23,38 +23,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check if user is logged in on mount
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
 
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-        // Refresh user data from server
-        refreshUser();
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+      console.log('Initializing auth - token:', !!token, 'storedUser:', !!storedUser);
+
+      if (token && storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          console.log('Setting user from localStorage:', parsedUser);
+          setUser(parsedUser);
+          // Don't refresh on mount to avoid logout loop
+          // refreshUser();
+        } catch (error) {
+          console.error('Failed to parse stored user:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
-  const login = async (data: LoginRequest): Promise<{ requires2FA?: boolean }> => {
+  const login = async (data: LoginRequest): Promise<{ requires2FA?: boolean; success?: boolean }> => {
     try {
       const response = await authService.login(data);
+      console.log('Login response:', response);
 
       if (response.requires_2fa) {
         return { requires2FA: true };
       }
 
       if (response.token && response.user) {
+        console.log('Setting user and token in localStorage');
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
         setUser(response.user);
+        console.log('User set in state:', response.user);
+        return { success: true };
+      } else {
+        console.error('Missing token or user in response:', {
+          hasToken: !!response.token,
+          hasUser: !!response.user,
+          response
+        });
+        throw new Error('Invalid response from server');
       }
-
-      return {};
     } catch (error) {
       throw new Error(handleApiError(error));
     }

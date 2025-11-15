@@ -86,94 +86,94 @@ func (u *usecase) Register(ctx context.Context, email, password string) (*entity
 
 // Login authenticates a user (first factor: email + password)
 // Security: Implements brute force protection by tracking failed attempts
-func (u *usecase) Login(ctx context.Context, email, password, ip string) (requiresTwoFA bool, token string, err error) {
+func (u *usecase) Login(ctx context.Context, email, password, ip string) (requiresTwoFA bool, token string, user *entity.User, err error) {
 	// Brute force protection: Check failed attempts by email
 	failedAttempts, err := u.repo.CountFailedAttempts(ctx, email, lockoutWindow)
 	if err != nil {
-		return false, "", fmt.Errorf("failed to check failed attempts: %w", err)
+		return false, "", nil, fmt.Errorf("failed to check failed attempts: %w", err)
 	}
 
 	if failedAttempts >= maxFailedAttempts {
 		// Account is temporarily locked
-		return false, "", ErrAccountLocked
+		return false, "", nil, ErrAccountLocked
 	}
 
 	// Brute force protection: Check failed attempts by IP
 	failedAttemptsIP, err := u.repo.CountFailedAttemptsByIP(ctx, ip, lockoutWindow)
 	if err != nil {
-		return false, "", fmt.Errorf("failed to check failed attempts by IP: %w", err)
+		return false, "", nil, fmt.Errorf("failed to check failed attempts by IP: %w", err)
 	}
 
 	if failedAttemptsIP >= maxFailedAttempts*2 {
 		// IP is temporarily blocked
-		return false, "", ErrAccountLocked
+		return false, "", nil, ErrAccountLocked
 	}
 
 	// Get user
-	user, err := u.repo.GetUserByEmail(ctx, email)
+	loggedUser, err := u.repo.GetUserByEmail(ctx, email)
 	if err != nil {
-		return false, "", fmt.Errorf("failed to get user: %w", err)
+		return false, "", nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
 	// Record failed attempt if user not found
-	if user == nil {
+	if loggedUser == nil {
 		_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
 			IPAddress: ip,
 			Success:   false,
 			CreatedAt: time.Now(),
 		})
-		return false, "", ErrInvalidCredentials
+		return false, "", nil, ErrInvalidCredentials
 	}
 
 	// Verify password
-	if !pkgAuth.VerifyPassword(user.PasswordHash, password) {
+	if !pkgAuth.VerifyPassword(loggedUser.PasswordHash, password) {
 		// Record failed attempt
 		_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
-			UserID:    &user.ID,
+			UserID:    &loggedUser.ID,
 			IPAddress: ip,
 			Success:   false,
 			CreatedAt: time.Now(),
 		})
-		return false, "", ErrInvalidCredentials
+		return false, "", nil, ErrInvalidCredentials
 	}
 
 	// If 2FA is enabled, don't generate token yet
-	if user.TwoFAEnabled {
-		return true, "", nil
+	if loggedUser.TwoFAEnabled {
+		return true, "", nil, nil
 	}
 
 	// Record successful attempt
 	_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
-		UserID:    &user.ID,
+		UserID:    &loggedUser.ID,
 		IPAddress: ip,
 		Success:   true,
 		CreatedAt: time.Now(),
 	})
 
 	// Generate JWT token
-	token, err = u.jwtManager.GenerateToken(user.ID, user.Email, user.Role)
+	token, err = u.jwtManager.GenerateToken(loggedUser.ID, loggedUser.Email, loggedUser.Role)
 	if err != nil {
-		return false, "", fmt.Errorf("failed to generate token: %w", err)
+		return false, "", nil, fmt.Errorf("failed to generate token: %w", err)
 	}
 
-	return false, token, nil
+	return false, token, loggedUser, nil
 }
 
 // Verify2FA verifies the 2FA code and generates JWT token
 // Security: Second factor authentication significantly increases account security
-func (u *usecase) Verify2FA(ctx context.Context, email, code, ip string) (string, error) {
+func (u *usecase) Verify2FA(ctx context.Context, email, code, ip string) (string, *entity.User, error) {
 	// Get user
 	user, err := u.repo.GetUserByEmail(ctx, email)
 	if err != nil {
-		return "", fmt.Errorf("failed to get user: %w", err)
+		return "", nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
 	if user == nil {
-		return "", ErrUserNotFound
+		return "", nil, ErrUserNotFound
 	}
 
 	if !user.TwoFAEnabled || user.TwoFASecret == nil {
-		return "", Err2FANotEnabled
+		return "", nil, Err2FANotEnabled
 	}
 
 	// Validate TOTP code
@@ -185,7 +185,7 @@ func (u *usecase) Verify2FA(ctx context.Context, email, code, ip string) (string
 			Success:   false,
 			CreatedAt: time.Now(),
 		})
-		return "", ErrInvalid2FACode
+		return "", nil, ErrInvalid2FACode
 	}
 
 	// Record successful attempt
@@ -199,10 +199,10 @@ func (u *usecase) Verify2FA(ctx context.Context, email, code, ip string) (string
 	// Generate JWT token
 	token, err := u.jwtManager.GenerateToken(user.ID, user.Email, user.Role)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
+		return "", nil, fmt.Errorf("failed to generate token: %w", err)
 	}
 
-	return token, nil
+	return token, user, nil
 }
 
 // GetCurrentUser retrieves the current authenticated user

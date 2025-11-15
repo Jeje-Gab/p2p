@@ -39,22 +39,33 @@ export default function LoginPage() {
           setLoading(false);
           return;
         }
+        console.log('Verifying 2FA...');
         await verify2FA({
           email: credentials.email,
           password: credentials.password,
           code: data.code,
         });
+        console.log('2FA verified, redirecting to dashboard');
         router.push('/dashboard');
       } else {
+        console.log('Attempting login...');
         const result = await login({ email: data.email, password: data.password });
+        console.log('Login result:', result);
         if (result.requires2FA) {
+          console.log('2FA required, showing 2FA form');
           setRequires2FA(true);
           setCredentials({ email: data.email, password: data.password });
+        } else if (result.success) {
+          console.log('Login successful, redirecting to dashboard');
+          // Use replace instead of push to prevent back button issues
+          router.replace('/dashboard');
         } else {
-          router.push('/dashboard');
+          console.error('Unexpected login result:', result);
+          setError('Login failed - please try again');
         }
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setLoading(false);

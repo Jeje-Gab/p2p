@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/auth/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/offers/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/offers/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/skins/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/trades/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/trades/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/migrations/01_init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/migrations/01_init.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/migrations/01_init_users.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/migrations/01_init_users.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/migrations/02_init_skins.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/migrations/02_init_skins.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/migrations/03_init_offers_trades.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/migrations/03_init_offers_trades.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/migrations/04_seed_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/migrations/04_seed_data.sql" afterDir="false" />
-    </list>
+    <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

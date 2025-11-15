@@ -10,8 +10,8 @@ import (
 type UseCase interface {
 	// Authentication
 	Register(ctx context.Context, email, password string) (*entity.User, error)
-	Login(ctx context.Context, email, password, ip string) (requiresCode bool, token string, err error)
-	Verify2FA(ctx context.Context, email, code, ip string) (token string, err error)
+	Login(ctx context.Context, email, password, ip string) (requiresCode bool, token string, user *entity.User, err error)
+	Verify2FA(ctx context.Context, email, code, ip string) (token string, user *entity.User, err error)
 	GetCurrentUser(ctx context.Context, userID int64) (*entity.User, error)
 
 	// 2FA Management
