@@ -33,12 +33,17 @@ export default function DashboardPage() {
       ]);
 
       setStats({
-        totalSkins: mySkins.reduce((acc, item) => acc + item.quantity, 0),
-        activeOffers: myOffers.filter((o) => o.status === 'open').length,
-        completedTrades: myTrades.length,
+        totalSkins: (mySkins || []).reduce((acc, item) => acc + item.quantity, 0),
+        activeOffers: (myOffers || []).filter((o) => o.status === 'open').length,
+        completedTrades: (myTrades || []).length,
       });
     } catch (error) {
       console.error('Failed to load stats:', error);
+      setStats({
+        totalSkins: 0,
+        activeOffers: 0,
+        completedTrades: 0,
+      });
     } finally {
       setLoading(false);
     }

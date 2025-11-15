@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="" />
+    <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/skins/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/usecase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/skins/usecase/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/usecase/usecase.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,5 +78,16 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go</url>
+          <line>72</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

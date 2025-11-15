@@ -114,11 +114,49 @@ func (h *Handler) AddSkinToMyInventory(c echo.Context) error {
 	})
 }
 
+type RemoveSkinRequest struct {
+	Quantity int `json:"quantity" validate:"required,min=1"`
+}
+
+// RemoveSkinFromMyInventory removes a skin from user's inventory
+func (h *Handler) RemoveSkinFromMyInventory(c echo.Context) error {
+	userID := middleware.GetUserID(c)
+
+	skinID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, APIResponse{
+			Success: false,
+			Message: "Invalid skin ID",
+		})
+	}
+
+	var req RemoveSkinRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, APIResponse{
+			Success: false,
+			Message: "Invalid request",
+		})
+	}
+
+	if err := h.usecase.RemoveSkinFromUser(c.Request().Context(), userID, skinID, req.Quantity); err != nil {
+		return c.JSON(http.StatusBadRequest, APIResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, APIResponse{
+		Success: true,
+		Message: "Skin removed from inventory",
+	})
+}
+
 func RegisterRoutes(g *echo.Group, uc skins.UseCase) {
 	h := NewHandler(uc)
 
-	g.GET("", h.ListSkins)           // GET /skins
-	g.GET("/:id", h.GetSkin)         // GET /skins/:id
-	g.GET("/me", h.GetMySkins)       // GET /skins/me (requires auth)
-	g.POST("/me", h.AddSkinToMyInventory) // POST /skins/me (requires auth)
+	g.GET("", h.ListSkins)                  // GET /skins
+	g.GET("/:id", h.GetSkin)                // GET /skins/:id
+	g.GET("/my", h.GetMySkins)              // GET /skins/my (requires auth)
+	g.POST("/my", h.AddSkinToMyInventory)   // POST /skins/my (requires auth)
+	g.DELETE("/my/:id", h.RemoveSkinFromMyInventory) // DELETE /skins/my/:id (requires auth)
 }

@@ -14,9 +14,7 @@ export default function DashboardLayout({
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    console.log('Dashboard layout - user:', user, 'loading:', loading);
     if (!loading && !user) {
-      console.log('No user found, redirecting to login');
       router.push('/login');
     }
   }, [user, loading, router]);

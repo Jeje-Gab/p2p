@@ -43,11 +43,15 @@ export default function SkinsPage() {
         skinsService.getMySkins(),
         skinsService.getAllSkins(),
       ]);
-      setMySkins(mySkinsData);
-      setAllSkins(allSkinsData);
-      setFilteredSkins(allSkinsData);
+      setMySkins(mySkinsData || []);
+      setAllSkins(allSkinsData || []);
+      setFilteredSkins(allSkinsData || []);
     } catch (err) {
       setError(handleApiError(err));
+      // Garantir que arrays sejam inicializados mesmo em caso de erro
+      setMySkins([]);
+      setAllSkins([]);
+      setFilteredSkins([]);
     } finally {
       setLoading(false);
     }
@@ -120,7 +124,7 @@ export default function SkinsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredSkins.map((skin) => {
-              const ownedSkin = mySkins.find((ms) => ms.skin_id === skin.id);
+              const ownedSkin = mySkins?.find((ms) => ms.skin_id === skin.id);
               return (
                 <SkinCard
                   key={skin.id}
@@ -150,7 +154,7 @@ export default function SkinsPage() {
         </div>
       ) : (
         <>
-          {mySkins.length === 0 ? (
+          {!mySkins || mySkins.length === 0 ? (
             <Card>
               <CardBody className="text-center py-12">
                 <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -168,7 +172,7 @@ export default function SkinsPage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {mySkins.map((userSkin) => (
+              {mySkins?.map((userSkin) => (
                 <SkinCard
                   key={userSkin.id}
                   skin={userSkin.skin}

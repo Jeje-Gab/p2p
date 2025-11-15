@@ -76,3 +76,21 @@ func (u *usecase) AddSkinToUser(ctx context.Context, userID, skinID int64, quant
 
 	return nil
 }
+
+func (u *usecase) RemoveSkinFromUser(ctx context.Context, userID, skinID int64, quantity int) error {
+	// Verify skin exists
+	skin, err := u.repo.GetSkinByID(ctx, skinID)
+	if err != nil {
+		return fmt.Errorf("failed to verify skin: %w", err)
+	}
+
+	if skin == nil {
+		return ErrSkinNotFound
+	}
+
+	if err := u.repo.RemoveSkinFromUser(ctx, userID, skinID, quantity); err != nil {
+		return fmt.Errorf("failed to remove skin: %w", err)
+	}
+
+	return nil
+}

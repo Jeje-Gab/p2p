@@ -35,11 +35,15 @@ export default function OffersPage() {
         offersService.getMyOffers(),
         skinsService.getMySkins(),
       ]);
-      setAllOffers(allOffersData);
-      setMyOffers(myOffersData);
-      setMySkins(mySkinsData);
+      setAllOffers(allOffersData || []);
+      setMyOffers(myOffersData || []);
+      setMySkins(mySkinsData || []);
     } catch (err) {
       setError(handleApiError(err));
+      // Garantir que arrays sejam inicializados mesmo em caso de erro
+      setAllOffers([]);
+      setMyOffers([]);
+      setMySkins([]);
     } finally {
       setLoading(false);
     }
