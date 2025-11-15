@@ -5,9 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/skins/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/usecase.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/skins/usecase/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/usecase/usecase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/dashboard/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/offers/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/offers/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/skins/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/skins/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/contexts/AuthContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/contexts/AuthContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,16 +86,5 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go</url>
-          <line>72</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
