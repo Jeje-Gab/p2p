@@ -68,11 +68,16 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*entity.OfferWithDe
 		return nil, fmt.Errorf("failed to get offer: %w", err)
 	}
 
+	offer.PopulateSkins()
 	return &offer, nil
 }
 
 func (r *repository) List(ctx context.Context, status string, limit, offset int) ([]entity.OfferWithDetails, error) {
-	query := `
+	var query string
+	var offers []entity.OfferWithDetails
+	var err error
+
+	baseQuery := `
 		SELECT
 			o.id, o.owner_id, o.skin_offered_id, o.skin_requested_id, o.status, o.created_at, o.updated_at,
 			u.email as owner_email,
@@ -90,22 +95,20 @@ func (r *repository) List(ctx context.Context, status string, limit, offset int)
 	`
 
 	if status != "" {
-		query += " AND o.status = $1"
-	}
-
-	query += " ORDER BY o.created_at DESC LIMIT $2 OFFSET $3"
-
-	var offers []entity.OfferWithDetails
-	var err error
-
-	if status != "" {
+		query = baseQuery + " AND o.status = $1 ORDER BY o.created_at DESC LIMIT $2 OFFSET $3"
 		err = r.db.SelectContext(ctx, &offers, query, status, limit, offset)
 	} else {
+		query = baseQuery + " ORDER BY o.created_at DESC LIMIT $1 OFFSET $2"
 		err = r.db.SelectContext(ctx, &offers, query, limit, offset)
 	}
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to list offers: %w", err)
+	}
+
+	// Populate nested skin structs
+	for i := range offers {
+		offers[i].PopulateSkins()
 	}
 
 	return offers, nil
@@ -134,6 +137,11 @@ func (r *repository) ListByUser(ctx context.Context, userID int64, limit, offset
 	var offers []entity.OfferWithDetails
 	if err := r.db.SelectContext(ctx, &offers, query, userID, limit, offset); err != nil {
 		return nil, fmt.Errorf("failed to list user offers: %w", err)
+	}
+
+	// Populate nested skin structs
+	for i := range offers {
+		offers[i].PopulateSkins()
 	}
 
 	return offers, nil

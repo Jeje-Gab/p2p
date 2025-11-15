@@ -1,6 +1,7 @@
 package http
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -21,6 +22,7 @@ type APIResponse struct {
 	Success bool        `json:"success"`
 	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
+	Errors  interface{} `json:"errors,omitempty"`
 }
 
 func (h *Handler) GetTrade(c echo.Context) error {
@@ -47,9 +49,11 @@ func (h *Handler) ListMyTrades(c echo.Context) error {
 
 	trades, err := h.usecase.ListMyTrades(c.Request().Context(), userID, limit, offset)
 	if err != nil {
+		log.Printf("ERROR ListMyTrades: userID=%d, limit=%d, offset=%d, error=%v", userID, limit, offset, err)
 		return c.JSON(http.StatusInternalServerError, APIResponse{
 			Success: false,
 			Message: "Failed to list trades",
+			Errors:  err.Error(),
 		})
 	}
 
@@ -65,9 +69,11 @@ func (h *Handler) ListAllTrades(c echo.Context) error {
 
 	trades, err := h.usecase.ListAllTrades(c.Request().Context(), limit, offset)
 	if err != nil {
+		log.Printf("ERROR ListAllTrades: limit=%d, offset=%d, error=%v", limit, offset, err)
 		return c.JSON(http.StatusInternalServerError, APIResponse{
 			Success: false,
 			Message: "Failed to list trades",
+			Errors:  err.Error(),
 		})
 	}
 
@@ -81,6 +87,6 @@ func RegisterRoutes(g *echo.Group, uc trades.UseCase) {
 	h := NewHandler(uc)
 
 	g.GET("", h.ListAllTrades)
-	g.GET("/me", h.ListMyTrades)
+	g.GET("/my", h.ListMyTrades)
 	g.GET("/:id", h.GetTrade)
 }

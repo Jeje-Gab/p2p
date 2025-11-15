@@ -29,13 +29,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // Unwrap the backend's standard response format { success, message, data }
-    // Extract the actual data from response.data.data
-    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+    // Extract the actual data from response.data.data if success is true
+    if (response.data && typeof response.data === 'object' && response.data.success && 'data' in response.data) {
       response.data = response.data.data;
     }
     return response;
   },
-  (error: AxiosError) => {
+  (error: AxiosError<any>) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
@@ -49,7 +49,23 @@ api.interceptors.response.use(
 
 export const handleApiError = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
-    return error.response?.data?.error || error.response?.data?.message || error.message;
+    const responseData = error.response?.data;
+
+    // Try to extract error message from various possible formats
+    if (typeof responseData === 'string') {
+      return responseData;
+    }
+
+    if (responseData && typeof responseData === 'object') {
+      return responseData.message || responseData.error || responseData.errors || error.message;
+    }
+
+    return error.message || 'An unexpected error occurred';
   }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
   return 'An unexpected error occurred';
 };

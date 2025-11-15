@@ -36,10 +36,17 @@ func (u *usecase) ListMyTrades(ctx context.Context, userID int64, limit, offset 
 	if limit <= 0 {
 		limit = 50
 	}
+	if offset < 0 {
+		offset = 0
+	}
 
 	trades, err := u.repo.ListByUser(ctx, userID, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list user trades: %w", err)
+	}
+
+	if trades == nil {
+		return []entity.TradeWithDetails{}, nil
 	}
 
 	return trades, nil
@@ -49,10 +56,17 @@ func (u *usecase) ListAllTrades(ctx context.Context, limit, offset int) ([]entit
 	if limit <= 0 {
 		limit = 50
 	}
+	if offset < 0 {
+		offset = 0
+	}
 
 	trades, err := u.repo.List(ctx, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list trades: %w", err)
+	}
+
+	if trades == nil {
+		return []entity.TradeWithDetails{}, nil
 	}
 
 	return trades, nil

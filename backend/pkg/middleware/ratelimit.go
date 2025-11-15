@@ -81,13 +81,13 @@ func (rl *RateLimiter) Middleware() echo.MiddlewareFunc {
 }
 
 // StrictRateLimiter creates a stricter rate limiter for sensitive endpoints
-// Example: 5 requests per minute for login endpoints
+// Example: 500 requests per minute for login endpoints
 func StrictRateLimiter() *RateLimiter {
-	return NewRateLimiter(rate.Limit(5.0/60.0), 5) // 5 req/min
+	return NewRateLimiter(rate.Limit(500.0/60.0), 100) // 500 req/min
 }
 
 // ModerateRateLimiter creates a moderate rate limiter
-// Example: 30 requests per minute
+// Example: 1000 requests per minute
 func ModerateRateLimiter() *RateLimiter {
-	return NewRateLimiter(rate.Limit(30.0/60.0), 10) // 30 req/min
+	return NewRateLimiter(rate.Limit(1000.0/60.0), 200) // 1000 req/min
 }

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -21,6 +22,7 @@ type APIResponse struct {
 	Success bool        `json:"success"`
 	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
+	Errors  interface{} `json:"errors,omitempty"`
 }
 
 type CreateOfferRequest struct {
@@ -78,9 +80,11 @@ func (h *Handler) ListOffers(c echo.Context) error {
 
 	offers, err := h.usecase.ListOffers(c.Request().Context(), status, limit, offset)
 	if err != nil {
+		log.Printf("ERROR ListOffers: status=%s, limit=%d, offset=%d, error=%v", status, limit, offset, err)
 		return c.JSON(http.StatusInternalServerError, APIResponse{
 			Success: false,
 			Message: "Failed to list offers",
+			Errors:  err.Error(),
 		})
 	}
 
@@ -97,9 +101,11 @@ func (h *Handler) ListMyOffers(c echo.Context) error {
 
 	offers, err := h.usecase.ListMyOffers(c.Request().Context(), userID, limit, offset)
 	if err != nil {
+		log.Printf("ERROR ListMyOffers: userID=%d, limit=%d, offset=%d, error=%v", userID, limit, offset, err)
 		return c.JSON(http.StatusInternalServerError, APIResponse{
 			Success: false,
 			Message: "Failed to list offers",
+			Errors:  err.Error(),
 		})
 	}
 
@@ -148,7 +154,7 @@ func RegisterRoutes(g *echo.Group, uc offers.UseCase) {
 
 	g.POST("", h.CreateOffer)
 	g.GET("", h.ListOffers)
-	g.GET("/me", h.ListMyOffers)
+	g.GET("/my", h.ListMyOffers)
 	g.GET("/:id", h.GetOffer)
 	g.POST("/:id/accept", h.AcceptOffer)
 	g.POST("/:id/cancel", h.CancelOffer)

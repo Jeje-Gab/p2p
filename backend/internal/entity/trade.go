@@ -15,6 +15,6 @@ type Trade struct {
 type TradeWithDetails struct {
 	Trade
 	Offer         OfferWithDetails `json:"offer"`
-	FromUserEmail string           `json:"from_user_email"`
-	ToUserEmail   string           `json:"to_user_email"`
+	FromUserEmail string           `json:"from_user_email" db:"from_user_email"`
+	ToUserEmail   string           `json:"to_user_email" db:"to_user_email"`
 }

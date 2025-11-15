@@ -789,23 +789,7 @@ false Z
 false Zulu
 </TimeZones>
     </root>
-    <database id="2" parent="1" name="freterapido">
-      <ObjectId>41070</ObjectId>
-      <OwnerName>postgres</OwnerName>
-    </database>
-    <database id="3" parent="1" name="imobiliaria">
-      <ObjectId>16388</ObjectId>
-      <OwnerName>postgres</OwnerName>
-    </database>
-    <database id="4" parent="1" name="local">
-      <ObjectId>41171</ObjectId>
-      <OwnerName>postgres</OwnerName>
-    </database>
-    <database id="5" parent="1" name="metrics">
-      <ObjectId>16410</ObjectId>
-      <OwnerName>postgres</OwnerName>
-    </database>
-    <database id="6" parent="1" name="postgres">
+    <database id="2" parent="1" name="postgres">
       <Comment>default administrative connection database</Comment>
       <Current>1</Current>
       <Grants>11||10|C|G
@@ -821,57 +805,73 @@ false Zulu
       <ObjectId>5</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
-    <database id="7" parent="1" name="trading">
+    <database id="3" parent="1" name="imobiliaria">
+      <ObjectId>16388</ObjectId>
+      <OwnerName>postgres</OwnerName>
+    </database>
+    <database id="4" parent="1" name="metrics">
+      <ObjectId>16410</ObjectId>
+      <OwnerName>postgres</OwnerName>
+    </database>
+    <database id="5" parent="1" name="trading">
       <ObjectId>32878</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
-    <role id="8" parent="1" name="pg_checkpoint">
-      <ObjectId>4544</ObjectId>
-    </role>
-    <role id="9" parent="1" name="pg_create_subscription">
-      <ObjectId>6304</ObjectId>
-    </role>
-    <role id="10" parent="1" name="pg_database_owner">
+    <database id="6" parent="1" name="freterapido">
+      <ObjectId>41070</ObjectId>
+      <OwnerName>postgres</OwnerName>
+    </database>
+    <database id="7" parent="1" name="local">
+      <ObjectId>41171</ObjectId>
+      <OwnerName>postgres</OwnerName>
+    </database>
+    <role id="8" parent="1" name="pg_database_owner">
       <ObjectId>6171</ObjectId>
     </role>
-    <role id="11" parent="1" name="pg_execute_server_program">
-      <ObjectId>4571</ObjectId>
+    <role id="9" parent="1" name="pg_read_all_data">
+      <ObjectId>6181</ObjectId>
     </role>
-    <role id="12" parent="1" name="pg_maintain">
-      <ObjectId>6337</ObjectId>
+    <role id="10" parent="1" name="pg_write_all_data">
+      <ObjectId>6182</ObjectId>
     </role>
-    <role id="13" parent="1" name="pg_monitor">
+    <role id="11" parent="1" name="pg_monitor">
       <ObjectId>3373</ObjectId>
       <RoleGrants>3374
 3375
 3377</RoleGrants>
     </role>
-    <role id="14" parent="1" name="pg_read_all_data">
-      <ObjectId>6181</ObjectId>
-    </role>
-    <role id="15" parent="1" name="pg_read_all_settings">
+    <role id="12" parent="1" name="pg_read_all_settings">
       <ObjectId>3374</ObjectId>
     </role>
-    <role id="16" parent="1" name="pg_read_all_stats">
+    <role id="13" parent="1" name="pg_read_all_stats">
       <ObjectId>3375</ObjectId>
     </role>
-    <role id="17" parent="1" name="pg_read_server_files">
+    <role id="14" parent="1" name="pg_stat_scan_tables">
+      <ObjectId>3377</ObjectId>
+    </role>
+    <role id="15" parent="1" name="pg_read_server_files">
       <ObjectId>4569</ObjectId>
+    </role>
+    <role id="16" parent="1" name="pg_write_server_files">
+      <ObjectId>4570</ObjectId>
+    </role>
+    <role id="17" parent="1" name="pg_execute_server_program">
+      <ObjectId>4571</ObjectId>
     </role>
     <role id="18" parent="1" name="pg_signal_backend">
       <ObjectId>4200</ObjectId>
     </role>
-    <role id="19" parent="1" name="pg_stat_scan_tables">
-      <ObjectId>3377</ObjectId>
+    <role id="19" parent="1" name="pg_checkpoint">
+      <ObjectId>4544</ObjectId>
     </role>
-    <role id="20" parent="1" name="pg_use_reserved_connections">
+    <role id="20" parent="1" name="pg_maintain">
+      <ObjectId>6337</ObjectId>
+    </role>
+    <role id="21" parent="1" name="pg_use_reserved_connections">
       <ObjectId>4550</ObjectId>
     </role>
-    <role id="21" parent="1" name="pg_write_all_data">
-      <ObjectId>6182</ObjectId>
-    </role>
-    <role id="22" parent="1" name="pg_write_server_files">
-      <ObjectId>4570</ObjectId>
+    <role id="22" parent="1" name="pg_create_subscription">
+      <ObjectId>6304</ObjectId>
     </role>
     <role id="23" parent="1" name="postgres">
       <BypassRls>1</BypassRls>
@@ -892,35 +892,35 @@ false Zulu
       <StateNumber>1</StateNumber>
       <OwnerName>postgres</OwnerName>
     </tablespace>
-    <schema id="26" parent="6" name="imobiliaria">
+    <schema id="26" parent="2" name="imobiliaria">
       <ObjectId>82295</ObjectId>
       <StateNumber>1202</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <schema id="27" parent="6" name="information_schema">
+    <schema id="27" parent="2" name="information_schema">
       <ObjectId>14704</ObjectId>
       <StateNumber>538</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <schema id="28" parent="6" name="p2p">
+    <schema id="28" parent="2" name="p2p">
       <IntrospectionStateNumber>7231</IntrospectionStateNumber>
       <LastIntrospectionLocalTimestamp>2025-11-15.01:38:28</LastIntrospectionLocalTimestamp>
       <ObjectId>91027</ObjectId>
       <StateNumber>7196</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <schema id="29" parent="6" name="pg_catalog">
+    <schema id="29" parent="2" name="pg_catalog">
       <Comment>system catalog schema</Comment>
       <ObjectId>11</ObjectId>
       <StateNumber>532</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <schema id="30" parent="6" name="project">
+    <schema id="30" parent="2" name="project">
       <ObjectId>41172</ObjectId>
       <StateNumber>1014</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <schema id="31" parent="6" name="public">
+    <schema id="31" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
       <IntrospectionStateNumber>7231</IntrospectionStateNumber>
@@ -929,12 +929,12 @@ false Zulu
       <StateNumber>532</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
-    <schema id="32" parent="6" name="resocialization">
+    <schema id="32" parent="2" name="resocialization">
       <ObjectId>65783</ObjectId>
       <StateNumber>1110</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <schema id="33" parent="6" name="tenant_demo">
+    <schema id="33" parent="2" name="tenant_demo">
       <Comment>Schema for demo tenant - Created by default seed</Comment>
       <ObjectId>82798</ObjectId>
       <StateNumber>1550</StateNumber>
@@ -2188,11 +2188,11 @@ pg_catalog</CollationParentNames>
       <StateNumber>1492</StateNumber>
       <UnderlyingIndexId>82747</UnderlyingIndexId>
     </key>
-    <key id="194" parent="56" name="tenants_bucket_name_key">
+    <key id="194" parent="56" name="tenants_slug_key">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>82754</ObjectId>
+      <ObjectId>82750</ObjectId>
       <StateNumber>1492</StateNumber>
-      <UnderlyingIndexId>82753</UnderlyingIndexId>
+      <UnderlyingIndexId>82749</UnderlyingIndexId>
     </key>
     <key id="195" parent="56" name="tenants_schema_name_key">
       <NameSurrogate>1</NameSurrogate>
@@ -2200,11 +2200,11 @@ pg_catalog</CollationParentNames>
       <StateNumber>1492</StateNumber>
       <UnderlyingIndexId>82751</UnderlyingIndexId>
     </key>
-    <key id="196" parent="56" name="tenants_slug_key">
+    <key id="196" parent="56" name="tenants_bucket_name_key">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>82750</ObjectId>
+      <ObjectId>82754</ObjectId>
       <StateNumber>1492</StateNumber>
-      <UnderlyingIndexId>82749</UnderlyingIndexId>
+      <UnderlyingIndexId>82753</UnderlyingIndexId>
     </key>
     <column id="197" parent="57" name="id">
       <DasType>integer|0s</DasType>

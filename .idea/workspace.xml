@@ -5,16 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/delivery/http/handlers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/skins/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/usecase.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/skins/usecase/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/skins/usecase/usecase.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/offers/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/offers/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/(dashboard)/skins/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/(dashboard)/skins/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/login/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/contexts/AuthContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/contexts/AuthContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/entity/offer.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/entity/offer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/entity/trade.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/entity/trade.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/offers/delivery/http/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/offers/delivery/http/handlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/offers/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/offers/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/offers/usecase/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/offers/usecase/usecase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/trades/delivery/http/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/trades/delivery/http/handlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/trades/usecase/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/trades/usecase/usecase.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +35,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Go Build.build.executor": "Debug",
+    "Go Build.build.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",

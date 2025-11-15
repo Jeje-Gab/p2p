@@ -74,10 +74,17 @@ func (u *usecase) ListOffers(ctx context.Context, status string, limit, offset i
 	if limit <= 0 {
 		limit = 50
 	}
+	if offset < 0 {
+		offset = 0
+	}
 
 	offers, err := u.offersRepo.List(ctx, status, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list offers: %w", err)
+	}
+
+	if offers == nil {
+		return []entity.OfferWithDetails{}, nil
 	}
 
 	return offers, nil
@@ -87,10 +94,17 @@ func (u *usecase) ListMyOffers(ctx context.Context, userID int64, limit, offset 
 	if limit <= 0 {
 		limit = 50
 	}
+	if offset < 0 {
+		offset = 0
+	}
 
 	offers, err := u.offersRepo.ListByUser(ctx, userID, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list user offers: %w", err)
+	}
+
+	if offers == nil {
+		return []entity.OfferWithDetails{}, nil
 	}
 
 	return offers, nil
