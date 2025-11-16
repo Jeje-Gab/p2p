@@ -109,7 +109,7 @@ export default function DashboardPage() {
           <CardHeader>
             <h2 className="text-xl font-semibold">Quick Actions</h2>
           </CardHeader>
-          <CardBody className="space-y-3">
+          <CardBody className="space-y-4">
             <Link href="/skins">
               <Button variant="primary" className="w-full">
                 <Package className="w-4 h-4 mr-2" />

@@ -14,7 +14,19 @@
       "Bash(go run:*)",
       "Bash(docker-compose ps:*)",
       "Bash(psql:*)",
-      "Bash(go build:*)"
+      "Bash(go build:*)",
+      "Bash(nul)",
+      "Bash(exit 0)",
+      "Bash(del nul 2)",
+      "Bash(git clean:*)",
+      "Bash(del \"\\.\\C:\\work\\p2p\\nul\" 2)",
+      "Bash(powershell.exe -Command \"Remove-Item -Path ''\\?\\C:\\work\\p2p\\nul'' -Force -ErrorAction SilentlyContinue\")",
+      "Bash(dir nul)",
+      "Bash(.gitignore)",
+      "Bash(powershell.exe -Command \"Get-ChildItem -Path . -Filter ''nul'' -Force 2>$null | Select-Object Name, FullName\")",
+      "Bash(git rm:*)",
+      "Bash(powershell.exe -Command \"if (Test-Path ''.\\nul'' -PathType Leaf) { ''Arquivo existe'' } else { ''Arquivo não existe'' }\")",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

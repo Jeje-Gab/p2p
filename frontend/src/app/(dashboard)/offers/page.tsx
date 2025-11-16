@@ -110,7 +110,7 @@ export default function OffersPage() {
             Browse and create P2P trade offers
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Button
             variant={viewMode === 'all' ? 'primary' : 'secondary'}
             onClick={() => setViewMode('all')}
@@ -191,7 +191,7 @@ export default function OffersPage() {
               </div>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <Button
                 onClick={handleCreateOffer}
                 disabled={!selectedOfferedSkin || !selectedRequestedSkin}
@@ -243,7 +243,7 @@ export default function OffersPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-3 ml-4">
                       {isMyOffer ? (
                         <Button
                           variant="danger"
