@@ -319,7 +319,7 @@ func (u *usecase) GenerateSteamAuthURL(ctx context.Context) (string, string, err
 
 // HandleSteamCallback processes the Steam OAuth callback
 // Creates user if doesn't exist, generates JWT token
-func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]string) (string, error) {
+func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]string) (string, *entity.User, error) {
 	// Convert map to url.Values
 	urlValues := url.Values{}
 	for k, v := range values {
@@ -329,13 +329,13 @@ func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]str
 	// Validate Steam response
 	steamUser, err := u.steamAuth.ValidateCallback(ctx, urlValues)
 	if err != nil {
-		return "", fmt.Errorf("failed to validate Steam callback: %w", err)
+		return "", nil, fmt.Errorf("failed to validate Steam callback: %w", err)
 	}
 
 	// Check if user exists
 	user, err := u.repo.GetUserBySteamID(ctx, steamUser.SteamID)
 	if err != nil {
-		return "", fmt.Errorf("failed to get user by Steam ID: %w", err)
+		return "", nil, fmt.Errorf("failed to get user by Steam ID: %w", err)
 	}
 
 	// Create user if doesn't exist
@@ -349,15 +349,15 @@ func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]str
 		}
 
 		if err := u.repo.CreateUser(ctx, user); err != nil {
-			return "", fmt.Errorf("failed to create Steam user: %w", err)
+			return "", nil, fmt.Errorf("failed to create Steam user: %w", err)
 		}
 	}
 
 	// Generate JWT token
 	token, err := u.jwtManager.GenerateToken(user.ID, user.Email, user.Role)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
+		return "", nil, fmt.Errorf("failed to generate token: %w", err)
 	}
 
-	return token, nil
+	return token, user, nil
 }

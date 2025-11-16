@@ -1,7 +1,11 @@
 package http
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/cs2-p2p-skins/backend/internal/auth"
 	"github.com/cs2-p2p-skins/backend/pkg/middleware"
@@ -340,20 +344,26 @@ func (h *Handler) SteamCallback(c echo.Context) error {
 		}
 	}
 
-	token, err := h.usecase.HandleSteamCallback(c.Request().Context(), values)
+	token, user, err := h.usecase.HandleSteamCallback(c.Request().Context(), values)
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, APIResponse{
-			Success: false,
-			Message: "Steam authentication failed",
-			Errors:  err.Error(),
-		})
+		// Redirect to frontend with error
+		frontendURL := os.Getenv("FRONTEND_URL")
+		if frontendURL == "" {
+			frontendURL = "http://localhost:3000"
+		}
+		return c.Redirect(http.StatusTemporaryRedirect, frontendURL+"/login?error=steam_auth_failed")
 	}
 
-	return c.JSON(http.StatusOK, APIResponse{
-		Success: true,
-		Message: "Steam login successful",
-		Data: map[string]interface{}{
-			"token": token,
-		},
-	})
+	// Redirect to frontend with token and user data
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		frontendURL = "http://localhost:3000"
+	}
+
+	// Encode user data as JSON
+	userData, _ := json.Marshal(user)
+	encodedUser := base64.URLEncoding.EncodeToString(userData)
+
+	redirectURL := fmt.Sprintf("%s/auth/steam/callback?token=%s&user=%s", frontendURL, token, encodedUser)
+	return c.Redirect(http.StatusTemporaryRedirect, redirectURL)
 }

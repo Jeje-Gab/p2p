@@ -13,6 +13,8 @@ interface AuthContextType {
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  setToken: (token: string) => void;
+  setUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -105,8 +107,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleSetToken = (token: string) => {
+    localStorage.setItem('token', token);
+  };
+
+  const handleSetUser = (userData: User) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, verify2FA, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      verify2FA,
+      register,
+      logout,
+      refreshUser,
+      setToken: handleSetToken,
+      setUser: handleSetUser
+    }}>
       {children}
     </AuthContext.Provider>
   );

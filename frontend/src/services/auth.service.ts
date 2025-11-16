@@ -44,7 +44,14 @@ export const authService = {
     return response.data;
   },
 
-  getSteamLoginUrl(): string {
-    return `${process.env.NEXT_PUBLIC_API_URL}/auth/steam/login`;
+  async getSteamLoginUrl(): Promise<string> {
+    const response = await api.get<{ auth_url: string }>('/auth/steam/login');
+    return response.data.auth_url;
+  },
+
+  async handleSteamCallback(params: Record<string, string>): Promise<LoginResponse> {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await api.get<LoginResponse>(`/auth/steam/callback?${queryString}`);
+    return response.data;
   },
 };

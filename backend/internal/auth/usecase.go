@@ -21,5 +21,5 @@ type UseCase interface {
 
 	// Steam OAuth
 	GenerateSteamAuthURL(ctx context.Context) (authURL, state string, err error)
-	HandleSteamCallback(ctx context.Context, values map[string]string) (token string, err error)
+	HandleSteamCallback(ctx context.Context, values map[string]string) (token string, user *entity.User, err error)
 }

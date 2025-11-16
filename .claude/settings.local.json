@@ -26,7 +26,11 @@
       "Bash(powershell.exe -Command \"Get-ChildItem -Path . -Filter ''nul'' -Force 2>$null | Select-Object Name, FullName\")",
       "Bash(git rm:*)",
       "Bash(powershell.exe -Command \"if (Test-Path ''.\\nul'' -PathType Leaf) { ''Arquivo existe'' } else { ''Arquivo não existe'' }\")",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(./server.exe)",
+      "Bash(./build.exe:*)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 12016 -Force\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 3948 -Force\")"
     ],
     "deny": [],
     "ask": []
