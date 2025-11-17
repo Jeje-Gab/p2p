@@ -1,0 +1,53 @@
+meta {
+  name: 6. Verify 2FA
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/auth/2fa/verify
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{user_email}}",
+    "code": "123456"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body.data && res.body.data.token) {
+    bru.setEnvVar("token", res.body.data.token);
+  }
+}
+
+docs {
+  # Verify 2FA (Second Factor)
+
+  Completes login by verifying the TOTP code after initial email/password authentication.
+
+  ## Security:
+  - Used after login returns `requires_2fa: true`
+  - Validates 6-digit TOTP code
+  - Returns JWT token on success
+
+  ## Request:
+  - `email`: User's email address
+  - `code`: 6-digit code from Google Authenticator
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "2FA verified successfully",
+    "data": {
+      "token": "eyJhbGciOiJIUzI1NiIs...",
+      "user": { ... }
+    }
+  }
+  ```
+
+  **Note:** Token is automatically saved to environment variable
+}

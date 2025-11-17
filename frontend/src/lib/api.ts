@@ -1,12 +1,21 @@
 import axios, { AxiosError } from 'axios';
+import https from 'https';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:8443/api';
+
+// In development, allow self-signed certificates
+// IMPORTANT: This should ONLY be used in development, never in production
+const httpsAgent = process.env.NODE_ENV !== 'production'
+  ? new https.Agent({ rejectUnauthorized: false })
+  : undefined;
 
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  // Only applied on server-side (Node.js), not in browser
+  httpsAgent,
 });
 
 // Request interceptor to add auth token

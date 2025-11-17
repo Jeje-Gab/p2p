@@ -1,0 +1,41 @@
+meta {
+  name: 7. Steam Login
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/api/auth/steam/login
+  body: none
+  auth: none
+}
+
+docs {
+  # Steam OAuth Login
+
+  Initiates Steam OAuth authentication flow.
+
+  ## Security:
+  - Uses Steam OpenID/OAuth2
+  - CSRF protection with state parameter
+  - Validates Steam response signature
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "auth_url": "https://steamcommunity.com/openid/login?..."
+    }
+  }
+  ```
+
+  ## Flow:
+  1. Call this endpoint to get Steam auth URL
+  2. Open `auth_url` in browser
+  3. User authenticates on Steam
+  4. Steam redirects to callback URL
+  5. Backend creates/updates user and returns JWT
+
+  **Note:** This is typically used from a web browser, not API client
+}

@@ -1,0 +1,50 @@
+meta {
+  name: 5. Get Market Stats
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/services/market/stats
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+docs {
+  # Get Market Stats (External API)
+
+  Returns aggregated marketplace statistics and metrics.
+
+  ## Security:
+  - Requires API Key authentication via `X-API-Key` header
+  - Rate limited (30 req/min)
+  - HTTPS only
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "total_skins": 150,
+      "total_trades": 342,
+      "available_for_trade": 150
+    }
+  }
+  ```
+
+  ## Metrics Included:
+  - `total_skins`: Total number of skins in the database
+  - `total_trades`: Total number of completed trades
+  - `available_for_trade`: Number of skins currently available for trading
+
+  ## Use Cases:
+  - Dashboard overview
+  - Health monitoring
+  - Platform growth metrics
+  - Business intelligence
+  - External reporting
+}

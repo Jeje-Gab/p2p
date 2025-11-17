@@ -30,7 +30,9 @@
       "Bash(./server.exe)",
       "Bash(./build.exe:*)",
       "Bash(powershell.exe -Command \"Stop-Process -Id 12016 -Force\")",
-      "Bash(powershell.exe -Command \"Stop-Process -Id 3948 -Force\")"
+      "Bash(powershell.exe -Command \"Stop-Process -Id 3948 -Force\")",
+      "Bash(openssl req:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []

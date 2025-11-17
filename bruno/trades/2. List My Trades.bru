@@ -1,0 +1,60 @@
+meta {
+  name: 2. List My Trades
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/trades/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # List My Trades
+
+  Returns all trades where the authenticated user was involved (as creator or acceptor).
+
+  ## Security:
+  - Requires JWT authentication
+  - Only shows trades involving current user
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "offer_id": 1,
+        "creator_id": 1,
+        "creator_email": "user1@example.com",
+        "acceptor_id": 2,
+        "acceptor_email": "user2@example.com",
+        "skin_offered_id": 1,
+        "skin_requested_id": 2,
+        "completed_at": "2025-11-16T10:30:00Z",
+        "skin_offered": {
+          "id": 1,
+          "name": "AK-47 | Redline",
+          "market_price": 25.50
+        },
+        "skin_requested": {
+          "id": 2,
+          "name": "M4A1-S | Hyper Beast",
+          "market_price": 28.00
+        }
+      }
+    ]
+  }
+  ```
+
+  ## Use Cases:
+  - Personal trade history
+  - Track your trading activity
+  - Verify completed trades
+}

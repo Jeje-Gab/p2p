@@ -1,0 +1,47 @@
+meta {
+  name: 4. Delete API Key
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/api/api-keys/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Delete API Key
+
+  Permanently removes an API key from the database.
+
+  ## Security:
+  - Requires JWT authentication
+  - Can only delete your own keys
+  - PERMANENT - cannot be undone!
+
+  ## Path Parameters:
+  - `id`: API key ID to delete
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "API key deleted successfully"
+  }
+  ```
+
+  ## Warning:
+  ⚠️ This action is PERMANENT and cannot be undone!
+
+  ## Revoke vs Delete:
+  - **Revoke**: Disables the key but keeps it in database (recommended)
+  - **Delete**: Permanently removes the key and all history
+
+  ## Recommendation:
+  Unless you need to remove sensitive data, prefer revoking keys to maintain audit history.
+}

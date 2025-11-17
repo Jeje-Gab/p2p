@@ -1,0 +1,68 @@
+meta {
+  name: 2. List My API Keys
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/api-keys
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # List My API Keys
+
+  Returns all API keys created by the authenticated user.
+
+  ## Security:
+  - Requires JWT authentication
+  - Rate limited (30 req/min)
+  - Only shows your own keys
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "key_prefix": "sk_live_a1b2c3d4e5f6...",
+        "user_id": 123,
+        "name": "Mobile App Production",
+        "description": "API key for our mobile application",
+        "is_active": true,
+        "last_used_at": "2025-11-16T22:30:00Z",
+        "expires_at": null,
+        "created_at": "2025-11-16T20:00:00Z",
+        "updated_at": "2025-11-16T20:00:00Z"
+      },
+      {
+        "id": 2,
+        "key_prefix": "sk_live_xyz789abc123...",
+        "user_id": 123,
+        "name": "Analytics Dashboard",
+        "description": null,
+        "is_active": false,
+        "last_used_at": null,
+        "expires_at": "2026-01-01T00:00:00Z",
+        "created_at": "2025-11-15T10:00:00Z",
+        "updated_at": "2025-11-16T15:00:00Z"
+      }
+    ]
+  }
+  ```
+
+  ## Fields:
+  - `key_prefix`: First characters of the key (for identification)
+  - `is_active`: Whether the key is currently active
+  - `last_used_at`: Last time the key was used (null if never used)
+  - `expires_at`: Expiration date (null if no expiration)
+
+  ## Note:
+  The actual API key is NEVER returned in list responses for security.
+}

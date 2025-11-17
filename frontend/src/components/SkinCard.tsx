@@ -33,6 +33,7 @@ export function SkinCard({ skin, quantity, onClick, actions }: SkinCardProps) {
             fill
             className="object-contain p-4"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            unoptimized
           />
           {quantity !== undefined && quantity > 1 && (
             <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded-full text-sm font-bold">

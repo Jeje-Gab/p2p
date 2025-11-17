@@ -1,0 +1,57 @@
+meta {
+  name: 4. Accept Offer
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/offers/1/accept
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Accept Trade Offer
+
+  Accepts an open trade offer, completing the P2P trade.
+
+  ## Security:
+  - Requires JWT authentication
+  - Validates user owns the requested skin
+  - Validates offer is still open
+  - Atomic transaction (both skins transferred or none)
+
+  ## Business Logic:
+  1. Verifies offer exists and is open
+  2. Verifies acceptor owns the requested skin
+  3. Transfers skin from creator to acceptor
+  4. Transfers skin from acceptor to creator
+  5. Marks offer as completed
+  6. Creates trade history record
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "Offer accepted successfully",
+    "data": {
+      "trade_id": 1,
+      "offer_id": 1,
+      "creator_id": 2,
+      "acceptor_id": 1,
+      "completed_at": "2025-11-16T10:30:00Z"
+    }
+  }
+  ```
+
+  ## Errors:
+  - 404: Offer not found
+  - 400: Offer not open / You don't own the requested skin
+  - 403: Cannot accept your own offer
+
+  **Note:** Replace `1` in URL with actual offer ID
+}

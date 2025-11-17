@@ -1,0 +1,42 @@
+meta {
+  name: 4. Setup 2FA
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/auth/2fa/setup
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Setup 2FA
+
+  Initiates Two-Factor Authentication setup for the user.
+
+  ## Security:
+  - Requires authenticated user
+  - Generates TOTP secret
+  - Returns QR code URL for Google Authenticator
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "2FA setup initiated",
+    "data": {
+      "secret": "JBSWY3DPEHPK3PXP",
+      "qr_url": "otpauth://totp/CS2%20P2P%20Skins:user@example.com?secret=..."
+    }
+  }
+  ```
+
+  ## Next Steps:
+  1. Scan QR code with Google Authenticator app
+  2. Call "Enable 2FA" endpoint with verification code
+}

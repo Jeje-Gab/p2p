@@ -1,0 +1,45 @@
+meta {
+  name: 5. Enable 2FA
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/auth/2fa/enable
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "code": "123456"
+  }
+}
+
+docs {
+  # Enable 2FA
+
+  Enables Two-Factor Authentication after verifying the TOTP code.
+
+  ## Security:
+  - Validates TOTP code from authenticator app
+  - Permanently enables 2FA for the account
+  - Future logins will require 2FA code
+
+  ## Request:
+  - `code`: 6-digit code from Google Authenticator
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "2FA enabled successfully"
+  }
+  ```
+
+  **Important:** Replace "123456" with actual code from your authenticator app
+}

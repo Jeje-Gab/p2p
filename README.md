@@ -37,7 +37,13 @@ Este projeto demonstra a implementação prática de conceitos avançados de seg
 - **Security Headers**: X-Content-Type-Options, X-Frame-Options, CSP
 - **CORS**: Configuração adequada de origens permitidas
 
-### 6. **Arquitetura Segura**
+### 6. **HTTPS/TLS (Criptografia em Trânsito)**
+- Certificados SSL/TLS auto-assinados para desenvolvimento
+- Suporte a TLS 1.2+
+- Criptografia de dados em trânsito
+- Possibilidade de uso de certificados de CA (Let's Encrypt, etc)
+
+### 7. **Arquitetura Segura**
 - Clean Architecture (separação de camadas)
 - Validação de entrada em todos os endpoints
 - Tratamento adequado de erros sem expor detalhes internos
@@ -131,10 +137,10 @@ Isso irá:
 3. ✅ Executar migrations automaticamente
 4. ✅ Subir a API na porta 8080
 
-### Passo 3: Verificar Health
+### Passo 3: Verificar Health (HTTPS)
 
 ```bash
-curl http://localhost:8080/healthz
+curl -k https://localhost:8443/healthz
 ```
 
 Resposta esperada:
@@ -144,6 +150,8 @@ Resposta esperada:
   "timestamp": 1234567890
 }
 ```
+
+**Nota**: A flag `-k` ignora a validação do certificado SSL (somente para desenvolvimento)
 
 ## 📚 API Endpoints
 
@@ -416,21 +424,34 @@ AllowHeaders: []string{"Authorization", "Content-Type"},
 AllowCredentials: true,
 ```
 
-## 🧪 Testando com Postman/Bruno
+## 🧪 Testando com Bruno
 
-1. **Registre um usuário**
-2. **Faça login e pegue o token JWT**
-3. **Configure 2FA**:
+A API inclui uma coleção completa do Bruno para testar todos os endpoints de forma segura via HTTPS.
+
+### Como Usar a Coleção Bruno
+
+1. **Instale o [Bruno](https://www.usebruno.com/)**
+2. **Abra a coleção**: `bruno/` na raiz do projeto
+3. **Selecione o ambiente**: "Local" (já configurado para https://localhost:8443)
+4. **Execute os testes** seguindo a ordem:
+
+#### Fluxo de Testes:
+1. **Registre um usuário** - `auth/1. Register`
+2. **Faça login e pegue o token JWT** - `auth/2. Login` (token salvo automaticamente)
+3. **Valide autenticação** - `auth/3. Get Current User`
+4. **Configure 2FA** (opcional):
    - Setup 2FA (pega QR code)
    - Escaneie com Google Authenticator
    - Habilite 2FA com código
-4. **Teste login com 2FA**:
+5. **Teste login com 2FA**:
    - Login retorna `requires_2fa: true`
    - Verify 2FA com código do app
-5. **Adicione skins ao inventário**
-6. **Crie ofertas de troca**
-7. **Aceite ofertas de outros usuários**
-8. **Veja histórico de trocas**
+6. **Adicione skins ao inventário** - `skins/4. Add Skin to Inventory`
+7. **Crie ofertas de troca** - `offers/1. Create Offer`
+8. **Aceite ofertas de outros usuários** - `offers/4. Accept Offer`
+9. **Veja histórico de trocas** - `trades/2. List My Trades`
+
+📖 **Documentação completa**: Veja `bruno/README.md` para detalhes sobre segurança, TLS e troubleshooting.
 
 ## 🔐 Steam OAuth Flow
 
@@ -447,22 +468,23 @@ AllowCredentials: true,
 
 | Conceito | Implementação |
 |----------|---------------|
-| **Confidencialidade** | Bcrypt para senhas, JWT para sessões |
-| **Integridade** | HMAC-SHA256 em JWTs, validação de entrada |
+| **Confidencialidade** | Bcrypt para senhas, JWT para sessões, HTTPS/TLS |
+| **Integridade** | HMAC-SHA256 em JWTs, validação de entrada, TLS |
 | **Disponibilidade** | Rate limiting, proteção contra DoS |
 | **Autenticação** | Email/senha + 2FA + OAuth2 Steam |
 | **Autorização** | RBAC (user/admin roles) |
 | **Auditoria** | Tabela login_attempts, logs estruturados |
 | **Defense in Depth** | Múltiplas camadas de segurança |
+| **Criptografia em Trânsito** | TLS 1.2+ com certificados SSL |
 
 ## 🚨 Limitações e Melhorias Futuras
 
 ### Limitações Atuais:
 1. **Steam Integration**: Simplificado para demo (não consome API real de inventário)
 2. **Email 2FA**: Não implementado (apenas TOTP/Google Authenticator)
-3. **HTTPS**: Configurar certificados SSL para produção
-4. **Session Management**: Implementar refresh tokens
-5. **Password Policy**: Adicionar requisitos de complexidade
+3. **Session Management**: Implementar refresh tokens
+4. **Password Policy**: Adicionar requisitos de complexidade
+5. **Production Certificates**: Certificados auto-assinados (usar Let's Encrypt em produção)
 
 ### Melhorias Recomendadas:
 1. ✅ Implementar refresh tokens (JWT de longa duração)

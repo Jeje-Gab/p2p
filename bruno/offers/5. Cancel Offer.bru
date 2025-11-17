@@ -1,0 +1,41 @@
+meta {
+  name: 5. Cancel Offer
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/offers/1/cancel
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Cancel Trade Offer
+
+  Cancels an open trade offer created by the authenticated user.
+
+  ## Security:
+  - Requires JWT authentication
+  - Only creator can cancel their own offers
+  - Cannot cancel already completed offers
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "Offer cancelled successfully"
+  }
+  ```
+
+  ## Errors:
+  - 404: Offer not found
+  - 403: Not your offer / Already completed
+  - 400: Offer is not open
+
+  **Note:** Replace `1` in URL with actual offer ID
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "CS2 P2P Skins API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

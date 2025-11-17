@@ -12,11 +12,18 @@ type Config struct {
 	DB           DBConfig
 	JWT          JWTConfig
 	Steam        SteamConfig
+	TLS          TLSConfig
+	APIKeys      string
 	AllowOrigins string
 }
 
 type HTTPConfig struct {
 	Port string
+}
+
+type TLSConfig struct {
+	CertFile string
+	KeyFile  string
 }
 
 type DBConfig struct {
@@ -60,6 +67,11 @@ func Load() *Config {
 			APIKey:      getenv("STEAM_API_KEY", ""),
 			CallbackURL: getenv("STEAM_CALLBACK_URL", "http://localhost:8080/api/auth/steam/callback"),
 		},
+		TLS: TLSConfig{
+			CertFile: getenv("TLS_CERT_FILE", "certs/server.crt"),
+			KeyFile:  getenv("TLS_KEY_FILE", "certs/server.key"),
+		},
+		APIKeys:      getenv("EXTERNAL_API_KEYS", ""),
 		AllowOrigins: getenv("ALLOW_ORIGINS", "http://localhost:3000,http://localhost:5173"),
 	}
 }

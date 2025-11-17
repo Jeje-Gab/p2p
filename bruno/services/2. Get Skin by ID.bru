@@ -1,0 +1,56 @@
+meta {
+  name: 2. Get Skin by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/services/skins/1
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+docs {
+  # Get Skin by ID (External API)
+
+  Returns detailed information about a specific skin.
+
+  ## Security:
+  - Requires API Key authentication via `X-API-Key` header
+  - Rate limited (30 req/min)
+  - HTTPS only
+
+  ## Path Parameters:
+  - `id`: Skin ID (integer)
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 1,
+      "name": "AK-47 | Redline",
+      "type": "Rifle",
+      "rarity": "Classified",
+      "exterior": "Field-Tested",
+      "market_price": 25.50,
+      "float_value": 0.23,
+      "image_url": "https://steamcommunity-a.akamaihd.net/...",
+      "created_at": "2025-11-16T10:00:00Z",
+      "updated_at": "2025-11-16T12:00:00Z"
+    }
+  }
+  ```
+
+  ## Error Response (404):
+  ```json
+  {
+    "success": false,
+    "message": "Skin not found"
+  }
+  ```
+}

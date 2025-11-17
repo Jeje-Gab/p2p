@@ -1,0 +1,57 @@
+meta {
+  name: 3. List My Offers
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/offers/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # List My Offers
+
+  Returns all trade offers created by the authenticated user.
+
+  ## Security:
+  - Requires JWT authentication
+  - Only shows current user's offers
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "creator_id": 1,
+        "skin_offered_id": 1,
+        "skin_requested_id": 2,
+        "status": "open",
+        "created_at": "2025-11-16T10:00:00Z",
+        "skin_offered": {
+          "id": 1,
+          "name": "AK-47 | Redline",
+          "market_price": 25.50
+        },
+        "skin_requested": {
+          "id": 2,
+          "name": "M4A1-S | Hyper Beast",
+          "market_price": 28.00
+        }
+      }
+    ]
+  }
+  ```
+
+  ## Statuses:
+  - `open`: Waiting for someone to accept
+  - `completed`: Trade was completed
+  - `cancelled`: Offer was cancelled by creator
+}

@@ -1,0 +1,50 @@
+meta {
+  name: 3. Get My Inventory
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/skins/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get My Inventory
+
+  Returns the authenticated user's skin inventory.
+
+  ## Security:
+  - Requires JWT authentication
+  - Only shows current user's skins
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "user_id": 1,
+        "skin_id": 5,
+        "quantity": 1,
+        "acquired_at": "2025-11-16T10:00:00Z",
+        "skin": {
+          "id": 5,
+          "name": "AWP | Dragon Lore",
+          "type": "Sniper Rifle",
+          "rarity": "Covert",
+          "exterior": "Factory New",
+          "market_price": 4500.00,
+          "image_url": "https://..."
+        }
+      }
+    ]
+  }
+  ```
+}

@@ -1,0 +1,40 @@
+meta {
+  name: 3. Get Current User
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/auth/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get Current User
+
+  Returns the authenticated user's information.
+
+  ## Security:
+  - Requires valid JWT token
+  - Token validated via middleware
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 1,
+      "email": "user@example.com",
+      "steam_id": "76561199147875580",
+      "twofa_enabled": false,
+      "role": "user",
+      "created_at": "2025-11-16T10:00:00Z"
+    }
+  }
+  ```
+}

@@ -1,0 +1,58 @@
+meta {
+  name: 1. Create Offer
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/offers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "skin_offered_id": 1,
+    "skin_requested_id": 2
+  }
+}
+
+docs {
+  # Create Trade Offer
+
+  Creates a new P2P trade offer offering one skin for another.
+
+  ## Security:
+  - Requires JWT authentication
+  - Validates user owns the offered skin
+  - Prevents duplicate active offers
+
+  ## Request:
+  - `skin_offered_id`: ID of skin from your inventory to offer
+  - `skin_requested_id`: ID of skin you want to receive
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "Offer created successfully",
+    "data": {
+      "id": 1,
+      "creator_id": 1,
+      "skin_offered_id": 1,
+      "skin_requested_id": 2,
+      "status": "open",
+      "created_at": "2025-11-16T10:00:00Z"
+    }
+  }
+  ```
+
+  ## Business Rules:
+  - User must own the offered skin
+  - Offered skin cannot be in another pending offer
+  - Both skins must exist
+}

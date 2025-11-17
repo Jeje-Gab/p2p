@@ -1,0 +1,53 @@
+meta {
+  name: 4. Add Skin to Inventory
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/skins/me
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "skin_id": 1,
+    "quantity": 1
+  }
+}
+
+docs {
+  # Add Skin to Inventory (Demo)
+
+  Adds a skin to the user's inventory for testing purposes.
+
+  ## Security:
+  - Requires JWT authentication
+  - In production, this would integrate with Steam API
+
+  ## Request:
+  - `skin_id`: ID of the skin to add
+  - `quantity`: Number of items (typically 1 for skins)
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "Skin added to inventory",
+    "data": {
+      "id": 1,
+      "user_id": 1,
+      "skin_id": 1,
+      "quantity": 1,
+      "acquired_at": "2025-11-16T10:00:00Z"
+    }
+  }
+  ```
+
+  **Note:** This is a demo endpoint for testing. In production, inventory would sync from Steam.
+}

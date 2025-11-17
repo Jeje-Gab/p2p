@@ -1,0 +1,33 @@
+meta {
+  name: 1. Register
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{user_email}}",
+    "password": "{{user_password}}"
+  }
+}
+
+docs {
+  # Register New User
+
+  Creates a new user account with email and password.
+
+  ## Security Features:
+  - Password is hashed with bcrypt (cost factor 12)
+  - Email validation
+  - Rate limiting applied (5 req/min)
+
+  ## Response:
+  - Success: 201 Created
+  - Error: 400 Bad Request (email already exists or invalid data)
+}

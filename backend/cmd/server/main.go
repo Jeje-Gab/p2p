@@ -35,6 +35,12 @@ import (
 	tradesHttp "github.com/cs2-p2p-skins/backend/internal/trades/delivery/http"
 	tradesRepo "github.com/cs2-p2p-skins/backend/internal/trades/repository"
 	tradesUC "github.com/cs2-p2p-skins/backend/internal/trades/usecase"
+
+	apikeysHttp "github.com/cs2-p2p-skins/backend/internal/apikeys/delivery/http"
+	apikeysRepo "github.com/cs2-p2p-skins/backend/internal/apikeys/repository"
+	apikeysUC "github.com/cs2-p2p-skins/backend/internal/apikeys/usecase"
+
+	servicesHttp "github.com/cs2-p2p-skins/backend/internal/services/delivery/http"
 )
 
 func main() {
@@ -67,12 +73,14 @@ func main() {
 	skinsRepository := skinsRepo.New(sqlxdb)
 	offersRepository := offersRepo.New(sqlxdb)
 	tradesRepository := tradesRepo.New(sqlxdb)
+	apikeysRepository := apikeysRepo.New(sqlxdb)
 
 	// Initialize use cases
 	authUseCase := authUC.New(authRepository, jwtManager, totpManager, steamAuth)
 	skinsUseCase := skinsUC.New(skinsRepository)
 	offersUseCase := offersUC.New(offersRepository, skinsRepository, tradesRepository)
 	tradesUseCase := tradesUC.New(tradesRepository)
+	apikeysUseCase := apikeysUC.New(apikeysRepository)
 
 	// Initialize rate limiters
 	strictRL := middleware.StrictRateLimiter()  // For auth endpoints
@@ -120,10 +128,37 @@ func main() {
 	tradesGroup := protected.Group("/trades")
 	tradesHttp.RegisterRoutes(tradesGroup, tradesUseCase)
 
+	// API Keys management routes (protected - requires JWT)
+	apikeysHandler := apikeysHttp.NewHandler(apikeysUseCase)
+	apikeysGroup := protected.Group("/api-keys")
+	apikeysHttp.RegisterRoutes(apikeysGroup, apikeysHandler)
+	log.Printf("[API-KEYS] API key management routes registered")
+
+	// Services routes (for external systems) - API Key authentication
+	servicesHandler := servicesHttp.NewHandler(skinsUseCase, offersUseCase, tradesUseCase)
+	servicesGroup := e.Group("/services", middleware.APIKeyAuth(apikeysUseCase), moderateRL.Middleware())
+	servicesHttp.RegisterRoutes(servicesGroup, servicesHandler)
+	log.Printf("[SERVICES] External API enabled with database-backed API keys")
+
 	// Start server in goroutine
 	go func() {
-		log.Printf("[HTTP] Server starting on port %s", cfg.HTTP.Port)
-		if err := e.Start(":" + cfg.HTTP.Port); err != nil && err != http.ErrServerClosed {
+		// HTTPS configuration
+		certFile := cfg.TLS.CertFile
+		keyFile := cfg.TLS.KeyFile
+
+		// Check if certificates exist
+		if _, err := os.Stat(certFile); os.IsNotExist(err) {
+			log.Fatalf("[HTTPS] Certificate not found at '%s'. Generate with: cd backend/certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -config openssl.cnf", certFile)
+		}
+		if _, err := os.Stat(keyFile); os.IsNotExist(err) {
+			log.Fatalf("[HTTPS] Private key not found at '%s'. Generate with: cd backend/certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -config openssl.cnf", keyFile)
+		}
+
+		log.Printf("[HTTPS] Server starting on port %s (TLS enabled)", cfg.HTTP.Port)
+		log.Printf("[HTTPS] Certificate: %s", certFile)
+		log.Printf("[HTTPS] Private Key: %s", keyFile)
+
+		if err := e.StartTLS(":"+cfg.HTTP.Port, certFile, keyFile); err != nil && err != http.ErrServerClosed {
 			log.Println("Server error:", err)
 		}
 	}()

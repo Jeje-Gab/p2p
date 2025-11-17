@@ -1,0 +1,63 @@
+meta {
+  name: 1. Get Available Skins
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/services/skins/available?limit=100&offset=0
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 100
+  offset: 0
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+docs {
+  # Get Available Skins (External API)
+
+  Returns paginated list of all available CS2 skins for external systems.
+
+  ## Security:
+  - Requires API Key authentication via `X-API-Key` header
+  - Rate limited (30 req/min)
+  - HTTPS only
+
+  ## Query Parameters:
+  - `limit`: Number of results (default: 100, max: 1000)
+  - `offset`: Pagination offset (default: 0)
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "skins": [
+        {
+          "id": 1,
+          "name": "AK-47 | Redline",
+          "type": "Rifle",
+          "rarity": "Classified",
+          "exterior": "Field-Tested",
+          "market_price": 25.50,
+          "image_url": "https://...",
+          "created_at": "2025-11-16T10:00:00Z"
+        }
+      ],
+      "total": 150,
+      "limit": 100,
+      "offset": 0
+    }
+  }
+  ```
+
+  ## Configuration:
+  Set your API key in the environment variables:
+  - `api_key`: Your external API key (generate with: `openssl rand -hex 32`)
+}

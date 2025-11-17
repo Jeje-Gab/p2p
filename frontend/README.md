@@ -44,7 +44,7 @@ Frontend application for the CS2 P2P Skins trading platform, built with Next.js 
 ### Prerequisites
 
 - Node.js 18+ installed
-- Backend API running (see backend README)
+- Backend API running on **HTTPS** (see backend README)
 
 ### Installation
 
@@ -59,15 +59,29 @@ Frontend application for the CS2 P2P Skins trading platform, built with Next.js 
    ```
 
 3. Configure environment variables:
-   - Copy `.env.local` and adjust if needed
-   - Default API URL: `http://localhost:8080/api`
+   - The `.env.local` file is already configured
+   - Default API URL: `https://localhost:8443/api` (**HTTPS**)
 
-4. Run the development server:
+4. **IMPORTANTE: Aceite o certificado SSL auto-assinado**
+
+   Antes de rodar o frontend, você precisa aceitar o certificado SSL do backend no navegador:
+
+   a. Abra no navegador: **https://localhost:8443/healthz**
+
+   b. Você verá um aviso de segurança. Clique em:
+      - Chrome/Edge: "Advanced" → "Proceed to localhost (unsafe)"
+      - Firefox: "Advanced" → "Accept the Risk and Continue"
+
+   c. Você deve ver: `{"status":"healthy",...}`
+
+   📖 **Detalhes completos:** Veja `SSL_SETUP.md` para mais informações
+
+5. Run the development server:
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Project Structure
 
@@ -145,7 +159,14 @@ frontend/
 
 ## API Integration
 
-The frontend communicates with the backend API at `http://localhost:8080/api`. All authenticated requests include a JWT token in the Authorization header.
+The frontend communicates with the backend API at `https://localhost:8443/api` via **HTTPS with TLS encryption**. All authenticated requests include a JWT token in the Authorization header.
+
+### Security Features
+
+- ✅ **HTTPS/TLS** - All data encrypted in transit
+- ✅ **JWT Authentication** - Secure token-based auth
+- ✅ **Self-signed certificates** in development (production requires CA certificates)
+- ✅ **Automatic SSL handling** - Next.js configured to accept dev certificates
 
 ### API Endpoints Used
 

@@ -7,6 +7,10 @@ bin/
 # Config
 .env
 
+# SSL Certificates (auto-generated)
+certs/*.key
+certs/*.crt
+
 # IDEs
 .idea/
 .vscode/

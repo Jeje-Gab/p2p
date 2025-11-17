@@ -1,0 +1,61 @@
+meta {
+  name: 2. Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{user_email}}",
+    "password": "{{user_password}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body.data && res.body.data.token) {
+    bru.setEnvVar("token", res.body.data.token);
+  }
+}
+
+docs {
+  # Login (First Factor)
+
+  Authenticates user with email and password.
+
+  ## Security Features:
+  - Brute force protection (max 5 attempts in 15 min)
+  - IP-based rate limiting
+  - Account lockout after failed attempts
+  - Returns JWT token
+
+  ## Response (without 2FA):
+  ```json
+  {
+    "success": true,
+    "message": "Login successful",
+    "data": {
+      "token": "eyJhbGciOiJIUzI1NiIs...",
+      "user": { ... }
+    }
+  }
+  ```
+
+  ## Response (with 2FA enabled):
+  ```json
+  {
+    "success": true,
+    "message": "2FA code required",
+    "data": {
+      "requires_2fa": true
+    }
+  }
+  ```
+
+  **Note:** Token is automatically saved to environment variable
+}

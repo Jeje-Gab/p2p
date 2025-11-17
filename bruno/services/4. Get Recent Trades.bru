@@ -1,0 +1,65 @@
+meta {
+  name: 4. Get Recent Trades
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/services/trades/recent?limit=50&offset=0
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 50
+  offset: 0
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+docs {
+  # Get Recent Trades (External API)
+
+  Returns recent completed trades for market analysis.
+
+  ## Security:
+  - Requires API Key authentication via `X-API-Key` header
+  - Rate limited (30 req/min)
+  - HTTPS only
+
+  ## Query Parameters:
+  - `limit`: Number of results (default: 50, max: 500)
+  - `offset`: Pagination offset (default: 0)
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "trades": [
+        {
+          "id": 1,
+          "offer_id": 42,
+          "buyer_id": 123,
+          "seller_id": 456,
+          "buyer_skin_id": 10,
+          "seller_skin_id": 20,
+          "status": "completed",
+          "created_at": "2025-11-16T10:00:00Z",
+          "completed_at": "2025-11-16T10:05:00Z"
+        }
+      ],
+      "limit": 50,
+      "offset": 0
+    }
+  }
+  ```
+
+  ## Use Cases:
+  - Historical trade analysis
+  - Price trend tracking
+  - Volume statistics
+  - Market intelligence
+}

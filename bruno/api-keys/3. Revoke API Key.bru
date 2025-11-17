@@ -1,0 +1,47 @@
+meta {
+  name: 3. Revoke API Key
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/api-keys/1/revoke
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Revoke API Key
+
+  Deactivates an API key without deleting it. The key will no longer work for authentication.
+
+  ## Security:
+  - Requires JWT authentication
+  - Can only revoke your own keys
+  - Immediate effect - key stops working instantly
+
+  ## Path Parameters:
+  - `id`: API key ID to revoke
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "message": "API key revoked successfully"
+  }
+  ```
+
+  ## Use Cases:
+  - Security breach: immediately disable compromised keys
+  - Temporary suspension: revoke without losing history
+  - Key rotation: revoke old key before creating new one
+
+  ## Note:
+  - Revoked keys can be seen in the list with `is_active: false`
+  - To permanently remove, use DELETE endpoint instead
+  - Revocation is immediate and irreversible
+}
