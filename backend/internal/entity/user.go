@@ -30,3 +30,13 @@ type LoginAttempt struct {
 	Success   bool      `json:"success" db:"success"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
+
+// BackupCode represents a one-time use 2FA recovery code
+type BackupCode struct {
+	ID        int64      `json:"id" db:"id"`
+	UserID    int64      `json:"user_id" db:"user_id"`
+	CodeHash  string     `json:"-" db:"code_hash"` // Never expose hash
+	Used      bool       `json:"used" db:"used"`
+	UsedAt    *time.Time `json:"used_at,omitempty" db:"used_at"`
+	CreatedAt time.Time  `json:"created_at" db:"created_at"`
+}

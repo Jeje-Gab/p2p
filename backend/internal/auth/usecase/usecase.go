@@ -13,13 +13,15 @@ import (
 )
 
 var (
-	ErrInvalidCredentials = errors.New("invalid email or password")
-	ErrUserExists         = errors.New("user already exists")
-	ErrUserNotFound       = errors.New("user not found")
-	ErrAccountLocked      = errors.New("account temporarily locked due to too many failed attempts")
-	ErrInvalid2FACode     = errors.New("invalid 2FA code")
-	Err2FANotEnabled      = errors.New("2FA not enabled for this user")
-	Err2FAAlreadyEnabled  = errors.New("2FA already enabled")
+	ErrInvalidCredentials  = errors.New("invalid email or password")
+	ErrUserExists          = errors.New("user already exists")
+	ErrUserNotFound        = errors.New("user not found")
+	ErrAccountLocked       = errors.New("account temporarily locked due to too many failed attempts")
+	ErrInvalid2FACode      = errors.New("invalid 2FA code")
+	Err2FANotEnabled       = errors.New("2FA not enabled for this user")
+	Err2FAAlreadyEnabled   = errors.New("2FA already enabled")
+	ErrInvalidBackupCode   = errors.New("invalid or already used backup code")
+	ErrNoBackupCodesFound  = errors.New("no unused backup codes found")
 )
 
 const (
@@ -221,6 +223,7 @@ func (u *usecase) GetCurrentUser(ctx context.Context, userID int64) (*entity.Use
 
 // Setup2FA generates a new 2FA secret for a user
 // Returns the secret and QR code URL for Google Authenticator
+// Saves the secret in the database (but doesn't enable 2FA yet)
 func (u *usecase) Setup2FA(ctx context.Context, userID int64) (string, string, error) {
 	user, err := u.repo.GetUserByID(ctx, userID)
 	if err != nil {
@@ -241,44 +244,70 @@ func (u *usecase) Setup2FA(ctx context.Context, userID int64) (string, string, e
 		return "", "", fmt.Errorf("failed to generate 2FA secret: %w", err)
 	}
 
+	// Save secret to database (but don't enable yet)
+	// This allows Enable2FA to validate against the same secret
+	if err := u.repo.SaveTwoFASecret(ctx, userID, secret); err != nil {
+		return "", "", fmt.Errorf("failed to save 2FA secret: %w", err)
+	}
+
 	return secret, qrURL, nil
 }
 
 // Enable2FA enables 2FA for a user after verifying the code
-func (u *usecase) Enable2FA(ctx context.Context, userID int64, code string) error {
+// Returns backup codes that should be shown to the user ONCE
+func (u *usecase) Enable2FA(ctx context.Context, userID int64, code string) ([]string, error) {
 	user, err := u.repo.GetUserByID(ctx, userID)
 	if err != nil {
-		return fmt.Errorf("failed to get user: %w", err)
+		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
 	if user == nil {
-		return ErrUserNotFound
+		return nil, ErrUserNotFound
 	}
 
 	if user.TwoFAEnabled {
-		return Err2FAAlreadyEnabled
+		return nil, Err2FAAlreadyEnabled
 	}
 
-	// Generate and validate secret
-	secret, _, err := u.totpManager.GenerateSecret(user.Email)
+	// Check if secret was set during Setup2FA
+	if user.TwoFASecret == nil || *user.TwoFASecret == "" {
+		return nil, fmt.Errorf("2FA not set up. Please run setup first")
+	}
+
+	// Validate code before enabling (use saved secret from Setup2FA)
+	if !u.totpManager.ValidateCode(*user.TwoFASecret, code) {
+		return nil, ErrInvalid2FACode
+	}
+
+	// Generate backup codes
+	backupCodes, err := pkgAuth.GenerateBackupCodes(pkgAuth.BackupCodesCount)
 	if err != nil {
-		return fmt.Errorf("failed to generate secret: %w", err)
+		return nil, fmt.Errorf("failed to generate backup codes: %w", err)
 	}
 
-	// Validate code before enabling
-	if !u.totpManager.ValidateCode(secret, code) {
-		return ErrInvalid2FACode
+	// Extract plain codes for user and hashes for database
+	plainCodes := make([]string, len(backupCodes))
+	hashes := make([]string, len(backupCodes))
+	for i, code := range backupCodes {
+		plainCodes[i] = code.PlainCode
+		hashes[i] = code.Hash
 	}
 
-	// Enable 2FA
-	if err := u.repo.Enable2FA(ctx, userID, secret); err != nil {
-		return fmt.Errorf("failed to enable 2FA: %w", err)
+	// Enable 2FA (secret already saved during Setup2FA)
+	if err := u.repo.Enable2FA(ctx, userID, *user.TwoFASecret); err != nil {
+		return nil, fmt.Errorf("failed to enable 2FA: %w", err)
 	}
 
-	return nil
+	// Save backup codes
+	if err := u.repo.CreateBackupCodes(ctx, userID, hashes); err != nil {
+		return nil, fmt.Errorf("failed to save backup codes: %w", err)
+	}
+
+	return plainCodes, nil
 }
 
 // Disable2FA disables 2FA for a user after verifying the code
+// Also deletes all backup codes
 func (u *usecase) Disable2FA(ctx context.Context, userID int64, code string) error {
 	user, err := u.repo.GetUserByID(ctx, userID)
 	if err != nil {
@@ -303,7 +332,58 @@ func (u *usecase) Disable2FA(ctx context.Context, userID int64, code string) err
 		return fmt.Errorf("failed to disable 2FA: %w", err)
 	}
 
+	// Delete all backup codes
+	if err := u.repo.DeleteBackupCodes(ctx, userID); err != nil {
+		return fmt.Errorf("failed to delete backup codes: %w", err)
+	}
+
 	return nil
+}
+
+// Verify2FAForOAuth verifies 2FA code for OAuth users (without password)
+// Used for Steam OAuth and other OAuth providers
+func (u *usecase) Verify2FAForOAuth(ctx context.Context, email, code, ip string) (string, *entity.User, error) {
+	// Get user
+	user, err := u.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	if user == nil {
+		return "", nil, ErrUserNotFound
+	}
+
+	if !user.TwoFAEnabled || user.TwoFASecret == nil {
+		return "", nil, Err2FANotEnabled
+	}
+
+	// Validate TOTP code
+	if !u.totpManager.ValidateCode(*user.TwoFASecret, code) {
+		// Record failed attempt
+		_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
+			UserID:    &user.ID,
+			IPAddress: ip,
+			Success:   false,
+			CreatedAt: time.Now(),
+		})
+		return "", nil, ErrInvalid2FACode
+	}
+
+	// Record successful attempt
+	_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
+		UserID:    &user.ID,
+		IPAddress: ip,
+		Success:   true,
+		CreatedAt: time.Now(),
+	})
+
+	// Generate JWT token
+	token, err := u.jwtManager.GenerateToken(user.ID, user.Email, user.Role)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to generate token: %w", err)
+	}
+
+	return token, user, nil
 }
 
 // GenerateSteamAuthURL generates the Steam OAuth login URL
@@ -318,8 +398,8 @@ func (u *usecase) GenerateSteamAuthURL(ctx context.Context) (string, string, err
 }
 
 // HandleSteamCallback processes the Steam OAuth callback
-// Creates user if doesn't exist, generates JWT token
-func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]string) (string, *entity.User, error) {
+// Creates user if doesn't exist, checks for 2FA requirement
+func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]string) (bool, string, *entity.User, error) {
 	// Convert map to url.Values
 	urlValues := url.Values{}
 	for k, v := range values {
@@ -329,13 +409,13 @@ func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]str
 	// Validate Steam response
 	steamUser, err := u.steamAuth.ValidateCallback(ctx, urlValues)
 	if err != nil {
-		return "", nil, fmt.Errorf("failed to validate Steam callback: %w", err)
+		return false, "", nil, fmt.Errorf("failed to validate Steam callback: %w", err)
 	}
 
 	// Check if user exists
 	user, err := u.repo.GetUserBySteamID(ctx, steamUser.SteamID)
 	if err != nil {
-		return "", nil, fmt.Errorf("failed to get user by Steam ID: %w", err)
+		return false, "", nil, fmt.Errorf("failed to get user by Steam ID: %w", err)
 	}
 
 	// Create user if doesn't exist
@@ -349,9 +429,83 @@ func (u *usecase) HandleSteamCallback(ctx context.Context, values map[string]str
 		}
 
 		if err := u.repo.CreateUser(ctx, user); err != nil {
-			return "", nil, fmt.Errorf("failed to create Steam user: %w", err)
+			return false, "", nil, fmt.Errorf("failed to create Steam user: %w", err)
 		}
 	}
+
+	// If 2FA is enabled, don't generate token yet
+	if user.TwoFAEnabled {
+		return true, "", user, nil
+	}
+
+	// Generate JWT token
+	token, err := u.jwtManager.GenerateToken(user.ID, user.Email, user.Role)
+	if err != nil {
+		return false, "", nil, fmt.Errorf("failed to generate token: %w", err)
+	}
+
+	return false, token, user, nil
+}
+
+// Verify2FAWithBackupCode verifies a backup code and generates JWT token
+// Security: Backup codes are one-time use and stored hashed
+func (u *usecase) Verify2FAWithBackupCode(ctx context.Context, email, code, ip string) (string, *entity.User, error) {
+	// Get user
+	user, err := u.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	if user == nil {
+		return "", nil, ErrUserNotFound
+	}
+
+	if !user.TwoFAEnabled {
+		return "", nil, Err2FANotEnabled
+	}
+
+	// Get unused backup codes
+	backupCodes, err := u.repo.GetUnusedBackupCodes(ctx, user.ID)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to get backup codes: %w", err)
+	}
+
+	if len(backupCodes) == 0 {
+		return "", nil, ErrNoBackupCodesFound
+	}
+
+	// Try to validate against each unused code
+	var validCodeID *int64
+	for _, backupCode := range backupCodes {
+		if pkgAuth.ValidateBackupCode(backupCode.CodeHash, code) {
+			validCodeID = &backupCode.ID
+			break
+		}
+	}
+
+	if validCodeID == nil {
+		// Record failed attempt
+		_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
+			UserID:    &user.ID,
+			IPAddress: ip,
+			Success:   false,
+			CreatedAt: time.Now(),
+		})
+		return "", nil, ErrInvalidBackupCode
+	}
+
+	// Mark code as used
+	if err := u.repo.MarkBackupCodeAsUsed(ctx, *validCodeID); err != nil {
+		return "", nil, fmt.Errorf("failed to mark backup code as used: %w", err)
+	}
+
+	// Record successful attempt
+	_ = u.repo.CreateLoginAttempt(ctx, &entity.LoginAttempt{
+		UserID:    &user.ID,
+		IPAddress: ip,
+		Success:   true,
+		CreatedAt: time.Now(),
+	})
 
 	// Generate JWT token
 	token, err := u.jwtManager.GenerateToken(user.ID, user.Email, user.Role)

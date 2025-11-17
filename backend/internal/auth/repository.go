@@ -21,4 +21,13 @@ type Repository interface {
 	CreateLoginAttempt(ctx context.Context, attempt *entity.LoginAttempt) error
 	CountFailedAttempts(ctx context.Context, email string, since int) (int, error)
 	CountFailedAttemptsByIP(ctx context.Context, ip string, since int) (int, error)
+
+	// Backup code operations (for 2FA recovery)
+	CreateBackupCodes(ctx context.Context, userID int64, codeHashes []string) error
+	GetUnusedBackupCodes(ctx context.Context, userID int64) ([]*entity.BackupCode, error)
+	MarkBackupCodeAsUsed(ctx context.Context, codeID int64) error
+	DeleteBackupCodes(ctx context.Context, userID int64) error
+
+	// 2FA setup - save secret without enabling
+	SaveTwoFASecret(ctx context.Context, userID int64, secret string) error
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from './ui/Button';
-import { User, LogOut, Package, RefreshCcw, Trophy } from 'lucide-react';
+import { User, LogOut, Package, RefreshCcw, Trophy, Shield } from 'lucide-react';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -21,6 +21,7 @@ export function Navbar() {
     { href: '/skins', label: 'My Skins', icon: Package },
     { href: '/offers', label: 'Offers', icon: RefreshCcw },
     { href: '/trades', label: 'Trades', icon: Trophy },
+    { href: '/security', label: 'Security', icon: Shield },
   ];
 
   return (

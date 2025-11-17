@@ -32,7 +32,9 @@
       "Bash(powershell.exe -Command \"Stop-Process -Id 12016 -Force\")",
       "Bash(powershell.exe -Command \"Stop-Process -Id 3948 -Force\")",
       "Bash(openssl req:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(dir \"C:\\work\\p2p\" /b /ad)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

@@ -262,3 +262,118 @@ func (r *repository) CountFailedAttemptsByIP(ctx context.Context, ip string, sin
 
 	return count, nil
 }
+
+// CreateBackupCodes creates backup codes for a user
+// Security: Codes are stored hashed and can only be used once
+func (r *repository) CreateBackupCodes(ctx context.Context, userID int64, codeHashes []string) error {
+	// Use a transaction to ensure all codes are created atomically
+	tx, err := r.db.BeginTxx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	query := `
+		INSERT INTO p2p.backup_codes (user_id, code_hash, created_at)
+		VALUES ($1, $2, $3)
+	`
+
+	now := time.Now()
+	for _, hash := range codeHashes {
+		_, err := tx.ExecContext(ctx, query, userID, hash, now)
+		if err != nil {
+			return fmt.Errorf("failed to create backup code: %w", err)
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return nil
+}
+
+// GetUnusedBackupCodes retrieves all unused backup codes for a user
+func (r *repository) GetUnusedBackupCodes(ctx context.Context, userID int64) ([]*entity.BackupCode, error) {
+	query := `
+		SELECT id, user_id, code_hash, used, used_at, created_at
+		FROM p2p.backup_codes
+		WHERE user_id = $1 AND used = false
+		ORDER BY created_at ASC
+	`
+
+	var codes []*entity.BackupCode
+	err := r.db.SelectContext(ctx, &codes, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get unused backup codes: %w", err)
+	}
+
+	return codes, nil
+}
+
+// MarkBackupCodeAsUsed marks a backup code as used
+// Security: Once used, codes cannot be reused (prevents replay attacks)
+func (r *repository) MarkBackupCodeAsUsed(ctx context.Context, codeID int64) error {
+	query := `
+		UPDATE p2p.backup_codes
+		SET used = true, used_at = $1
+		WHERE id = $2 AND used = false
+	`
+
+	result, err := r.db.ExecContext(ctx, query, time.Now(), codeID)
+	if err != nil {
+		return fmt.Errorf("failed to mark backup code as used: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rows == 0 {
+		return errors.New("backup code not found or already used")
+	}
+
+	return nil
+}
+
+// DeleteBackupCodes deletes all backup codes for a user
+func (r *repository) DeleteBackupCodes(ctx context.Context, userID int64) error {
+	query := `
+		DELETE FROM p2p.backup_codes
+		WHERE user_id = $1
+	`
+
+	_, err := r.db.ExecContext(ctx, query, userID)
+	if err != nil {
+		return fmt.Errorf("failed to delete backup codes: %w", err)
+	}
+
+	return nil
+}
+
+// SaveTwoFASecret saves the 2FA secret without enabling 2FA
+// This is used during setup phase before user verifies the code
+func (r *repository) SaveTwoFASecret(ctx context.Context, userID int64, secret string) error {
+	query := `
+		UPDATE p2p.users
+		SET twofa_secret = $1, updated_at = $2
+		WHERE id = $3 AND deleted_at IS NULL
+	`
+
+	result, err := r.db.ExecContext(ctx, query, secret, time.Now(), userID)
+	if err != nil {
+		return fmt.Errorf("failed to save 2FA secret: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rows == 0 {
+		return errors.New("user not found")
+	}
+
+	return nil
+}

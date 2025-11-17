@@ -15,6 +15,8 @@ func RegisterRoutes(g *echo.Group, usecase auth.UseCase, jwtManager *pkgAuth.JWT
 	g.POST("/register", handler.Register, rateLimiter.Middleware())
 	g.POST("/login", handler.Login, rateLimiter.Middleware())
 	g.POST("/2fa/verify", handler.Verify2FA, rateLimiter.Middleware())
+	g.POST("/2fa/verify-backup", handler.VerifyBackupCode, rateLimiter.Middleware())
+	g.POST("/2fa/verify-oauth", handler.Verify2FAOAuth, rateLimiter.Middleware())
 
 	// Steam OAuth routes
 	g.GET("/steam/login", handler.SteamLogin)

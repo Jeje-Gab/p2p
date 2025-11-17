@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [requires2FA, setRequires2FA] = useState(false);
+  const [useBackupCode, setUseBackupCode] = useState(false);
   const [credentials, setCredentials] = useState<LoginRequest | null>(null);
 
   const {
@@ -47,16 +48,31 @@ export default function LoginPage() {
     try {
       if (requires2FA && credentials) {
         if (!data.code) {
-          setError('Please enter your 2FA code');
+          setError(useBackupCode ? 'Please enter your backup code' : 'Please enter your 2FA code');
           setLoading(false);
           return;
         }
-        await verify2FA({
-          email: credentials.email,
-          password: credentials.password,
-          code: data.code,
-        });
-        router.push('/dashboard');
+
+        // Use backup code or regular 2FA
+        if (useBackupCode) {
+          const response = await authService.verifyBackupCode({
+            email: credentials.email,
+            password: credentials.password,
+            code: data.code,
+          });
+          if (response.token && response.user) {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('user', JSON.stringify(response.user));
+            router.push('/dashboard');
+          }
+        } else {
+          await verify2FA({
+            email: credentials.email,
+            password: credentials.password,
+            code: data.code,
+          });
+          router.push('/dashboard');
+        }
       } else {
         const result = await login({ email: data.email, password: data.password });
         if (result.requires2FA) {
@@ -143,20 +159,32 @@ export default function LoginPage() {
                 />
               </>
             ) : (
-              <Input
-                label="2FA Code"
-                type="text"
-                placeholder="000000"
-                maxLength={6}
-                error={errors.code?.message}
-                {...register('code', {
-                  required: '2FA code is required',
-                  pattern: {
-                    value: /^\d{6}$/,
-                    message: 'Code must be 6 digits',
-                  },
-                })}
-              />
+              <>
+                <Input
+                  label={useBackupCode ? 'Backup Code' : '2FA Code'}
+                  type="text"
+                  placeholder={useBackupCode ? 'XXXX-XXXX' : '000000'}
+                  maxLength={useBackupCode ? 9 : 6}
+                  error={errors.code?.message}
+                  {...register('code', {
+                    required: useBackupCode ? 'Backup code is required' : '2FA code is required',
+                    pattern: useBackupCode ? {
+                      value: /^[A-Z0-9]{4}-[A-Z0-9]{4}$/i,
+                      message: 'Backup code format: XXXX-XXXX',
+                    } : {
+                      value: /^\d{6}$/,
+                      message: 'Code must be 6 digits',
+                    },
+                  })}
+                />
+                <button
+                  type="button"
+                  className="text-sm text-blue-600 hover:underline -mt-2"
+                  onClick={() => setUseBackupCode(!useBackupCode)}
+                >
+                  {useBackupCode ? 'Use authenticator code instead' : 'Use backup code instead'}
+                </button>
+              </>
             )}
 
             {error && (

@@ -6,6 +6,7 @@ import {
   User,
   TwoFASetupResponse,
   TwoFAVerifyRequest,
+  TwoFAEnableResponse,
 } from '@/types';
 
 export const authService = {
@@ -24,6 +25,16 @@ export const authService = {
     return response.data;
   },
 
+  async verifyBackupCode(data: TwoFAVerifyRequest): Promise<LoginResponse> {
+    const response = await api.post<LoginResponse>('/auth/2fa/verify-backup', data);
+    return response.data;
+  },
+
+  async verify2FAOAuth(email: string, code: string): Promise<LoginResponse> {
+    const response = await api.post<LoginResponse>('/auth/2fa/verify-oauth', { email, code });
+    return response.data;
+  },
+
   async getMe(): Promise<User> {
     const response = await api.get<User>('/auth/me');
     return response.data;
@@ -34,8 +45,8 @@ export const authService = {
     return response.data;
   },
 
-  async enable2FA(code: string): Promise<{ message: string }> {
-    const response = await api.post('/auth/2fa/enable', { code });
+  async enable2FA(code: string): Promise<TwoFAEnableResponse> {
+    const response = await api.post<TwoFAEnableResponse>('/auth/2fa/enable', { code });
     return response.data;
   },
 

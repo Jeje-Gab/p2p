@@ -191,6 +191,91 @@ func (h *Handler) Verify2FA(c echo.Context) error {
 	})
 }
 
+// VerifyBackupCode handles 2FA verification using backup code
+// POST /auth/2fa/verify-backup
+func (h *Handler) VerifyBackupCode(c echo.Context) error {
+	var req Verify2FARequest // Reuse same struct (email + code)
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, APIResponse{
+			Success: false,
+			Message: "Invalid request",
+			Errors:  err.Error(),
+		})
+	}
+
+	ip := c.RealIP()
+
+	token, user, err := h.usecase.Verify2FAWithBackupCode(c.Request().Context(), req.Email, req.Code, ip)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, APIResponse{
+			Success: false,
+			Message: "Invalid or already used backup code",
+		})
+	}
+
+	return c.JSON(http.StatusOK, APIResponse{
+		Success: true,
+		Message: "Backup code verification successful. This code cannot be used again.",
+		Data: map[string]interface{}{
+			"token": token,
+			"user": map[string]interface{}{
+				"id":            user.ID,
+				"email":         user.Email,
+				"steam_id":      user.SteamID,
+				"role":          user.Role,
+				"twofa_enabled": user.TwoFAEnabled,
+				"created_at":    user.CreatedAt,
+				"updated_at":    user.UpdatedAt,
+			},
+		},
+	})
+}
+
+// Verify2FAOAuth handles 2FA verification for OAuth users (without password)
+// POST /auth/2fa/verify-oauth
+func (h *Handler) Verify2FAOAuth(c echo.Context) error {
+	type Request struct {
+		Email string `json:"email" validate:"required,email"`
+		Code  string `json:"code" validate:"required"`
+	}
+
+	var req Request
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, APIResponse{
+			Success: false,
+			Message: "Invalid request",
+			Errors:  err.Error(),
+		})
+	}
+
+	ip := c.RealIP()
+
+	token, user, err := h.usecase.Verify2FAForOAuth(c.Request().Context(), req.Email, req.Code, ip)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, APIResponse{
+			Success: false,
+			Message: "Invalid 2FA code",
+		})
+	}
+
+	return c.JSON(http.StatusOK, APIResponse{
+		Success: true,
+		Message: "2FA verification successful",
+		Data: map[string]interface{}{
+			"token": token,
+			"user": map[string]interface{}{
+				"id":            user.ID,
+				"email":         user.Email,
+				"steam_id":      user.SteamID,
+				"role":          user.Role,
+				"twofa_enabled": user.TwoFAEnabled,
+				"created_at":    user.CreatedAt,
+				"updated_at":    user.UpdatedAt,
+			},
+		},
+	})
+}
+
 // GetMe returns the current authenticated user
 // GET /auth/me
 func (h *Handler) GetMe(c echo.Context) error {
@@ -250,6 +335,7 @@ func (h *Handler) Setup2FA(c echo.Context) error {
 
 // Enable2FA enables 2FA after code verification
 // POST /auth/2fa/enable
+// Returns backup codes that should be saved by the user
 func (h *Handler) Enable2FA(c echo.Context) error {
 	userID := middleware.GetUserID(c)
 
@@ -262,7 +348,8 @@ func (h *Handler) Enable2FA(c echo.Context) error {
 		})
 	}
 
-	if err := h.usecase.Enable2FA(c.Request().Context(), userID, req.Code); err != nil {
+	backupCodes, err := h.usecase.Enable2FA(c.Request().Context(), userID, req.Code)
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
 			Message: "Invalid 2FA code or 2FA already enabled",
@@ -271,7 +358,10 @@ func (h *Handler) Enable2FA(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, APIResponse{
 		Success: true,
-		Message: "2FA enabled successfully",
+		Message: "2FA enabled successfully. Save these backup codes in a safe place. They can only be used once.",
+		Data: map[string]interface{}{
+			"backup_codes": backupCodes,
+		},
 	})
 }
 
@@ -344,7 +434,7 @@ func (h *Handler) SteamCallback(c echo.Context) error {
 		}
 	}
 
-	token, user, err := h.usecase.HandleSteamCallback(c.Request().Context(), values)
+	requires2FA, token, user, err := h.usecase.HandleSteamCallback(c.Request().Context(), values)
 	if err != nil {
 		// Redirect to frontend with error
 		frontendURL := os.Getenv("FRONTEND_URL")
@@ -354,13 +444,22 @@ func (h *Handler) SteamCallback(c echo.Context) error {
 		return c.Redirect(http.StatusTemporaryRedirect, frontendURL+"/login?error=steam_auth_failed")
 	}
 
-	// Redirect to frontend with token and user data
 	frontendURL := os.Getenv("FRONTEND_URL")
 	if frontendURL == "" {
 		frontendURL = "http://localhost:3000"
 	}
 
-	// Encode user data as JSON
+	// If 2FA is required, redirect to 2FA page
+	if requires2FA {
+		// Encode user data as JSON
+		userData, _ := json.Marshal(user)
+		encodedUser := base64.URLEncoding.EncodeToString(userData)
+
+		redirectURL := fmt.Sprintf("%s/auth/steam/callback?requires_2fa=true&user=%s", frontendURL, encodedUser)
+		return c.Redirect(http.StatusTemporaryRedirect, redirectURL)
+	}
+
+	// Redirect to frontend with token and user data
 	userData, _ := json.Marshal(user)
 	encodedUser := base64.URLEncoding.EncodeToString(userData)
 

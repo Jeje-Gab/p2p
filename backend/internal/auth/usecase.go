@@ -16,10 +16,12 @@ type UseCase interface {
 
 	// 2FA Management
 	Setup2FA(ctx context.Context, userID int64) (secret, qrURL string, err error)
-	Enable2FA(ctx context.Context, userID int64, code string) error
+	Enable2FA(ctx context.Context, userID int64, code string) (backupCodes []string, err error)
 	Disable2FA(ctx context.Context, userID int64, code string) error
+	Verify2FAWithBackupCode(ctx context.Context, email, code, ip string) (token string, user *entity.User, err error)
+	Verify2FAForOAuth(ctx context.Context, email, code, ip string) (token string, user *entity.User, err error)
 
 	// Steam OAuth
 	GenerateSteamAuthURL(ctx context.Context) (authURL, state string, err error)
-	HandleSteamCallback(ctx context.Context, values map[string]string) (token string, user *entity.User, err error)
+	HandleSteamCallback(ctx context.Context, values map[string]string) (requires2FA bool, token string, user *entity.User, err error)
 }

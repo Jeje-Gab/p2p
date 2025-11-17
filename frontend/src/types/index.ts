@@ -28,13 +28,18 @@ export interface LoginResponse {
 
 export interface TwoFASetupResponse {
   secret: string;
-  qr_code: string;
+  qr_url: string;
 }
 
 export interface TwoFAVerifyRequest {
   email: string;
   password: string;
   code: string;
+}
+
+export interface TwoFAEnableResponse {
+  message: string;
+  backup_codes: string[];
 }
 
 // Skin types

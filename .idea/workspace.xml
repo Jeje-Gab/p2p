@@ -5,12 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4b339e7c-f63b-4cfa-ac4d-cb0afc7d0974" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5/storage_v2/_src_/database/postgres.edMnLQ/schema/p2p.7qoBAA.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5/storage_v2/_src_/database/postgres.edMnLQ/schema/p2p.7qoBAA.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/58c90880-e6a4-475f-a3c1-dc92b4d55df5/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/auth/delivery/http/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/delivery/http/handlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/auth/delivery/http/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/delivery/http/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/auth/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/auth/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/auth/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/usecase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/auth/usecase/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/auth/usecase/usecase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/entity/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/entity/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/types/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
