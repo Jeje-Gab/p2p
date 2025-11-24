@@ -13,6 +13,7 @@ type Config struct {
 	JWT          JWTConfig
 	Steam        SteamConfig
 	TLS          TLSConfig
+	MinIO        MinIOConfig
 	APIKeys      string
 	AllowOrigins string
 }
@@ -39,6 +40,15 @@ type JWTConfig struct {
 type SteamConfig struct {
 	APIKey      string
 	CallbackURL string
+}
+
+type MinIOConfig struct {
+	Endpoint  string
+	AccessKey string
+	SecretKey string
+	Bucket    string
+	UseSSL    bool
+	PublicURL string
 }
 
 func getenv(k, def string) string {
@@ -72,6 +82,14 @@ func Load() *Config {
 			Enabled:  getenv("TLS_ENABLED", "false") == "true",
 			CertFile: getenv("TLS_CERT_FILE", "certs/server.crt"),
 			KeyFile:  getenv("TLS_KEY_FILE", "certs/server.key"),
+		},
+		MinIO: MinIOConfig{
+			Endpoint:  getenv("MINIO_ENDPOINT", "localhost:9000"),
+			AccessKey: getenv("MINIO_ACCESS_KEY", "minioadmin"),
+			SecretKey: getenv("MINIO_SECRET_KEY", "minioadmin"),
+			Bucket:    getenv("MINIO_BUCKET", "net.public.p2p"),
+			UseSSL:    getenv("MINIO_USE_SSL", "false") == "true",
+			PublicURL: getenv("MINIO_PUBLIC_URL", "http://localhost:9000"),
 		},
 		APIKeys:      getenv("EXTERNAL_API_KEYS", ""),
 		AllowOrigins: getenv("ALLOW_ORIGINS", "http://localhost:3000,http://localhost:5173"),

@@ -19,6 +19,7 @@ import (
 	"github.com/cs2-p2p-skins/backend/pkg/config"
 	"github.com/cs2-p2p-skins/backend/pkg/db"
 	"github.com/cs2-p2p-skins/backend/pkg/middleware"
+	"github.com/cs2-p2p-skins/backend/pkg/storage"
 
 	authHttp "github.com/cs2-p2p-skins/backend/internal/auth/delivery/http"
 	authRepo "github.com/cs2-p2p-skins/backend/internal/auth/repository"
@@ -62,6 +63,18 @@ func main() {
 	defer sqlxdb.Close()
 
 	log.Printf("[BOOT] Environment: %s | Port: %s", cfg.Env, cfg.HTTP.Port)
+
+	// Initialize MinIO storage
+	minioStorage, err := storage.NewMinIOStorage(cfg.MinIO)
+	if err != nil {
+		log.Printf("[MINIO] Warning: Failed to initialize MinIO: %v", err)
+		log.Printf("[MINIO] Skin images will not be available. Please ensure MinIO is running.")
+	} else {
+		// Initialize placeholder images for all skins (runs once, skips existing)
+		if err := minioStorage.InitializePlaceholderImages(ctx, sqlxdb); err != nil {
+			log.Printf("[MINIO] Warning: Failed to initialize placeholder images: %v", err)
+		}
+	}
 
 	// Initialize auth managers
 	jwtManager := auth.NewJWTManager(cfg.JWT.Secret, cfg.JWT.Expiration)

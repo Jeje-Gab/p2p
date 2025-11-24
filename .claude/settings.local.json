@@ -37,7 +37,9 @@
       "Bash(tree:*)",
       "Bash(powershell.exe -Command \"Stop-Process -Id 10840 -Force\")",
       "Bash(timeout:*)",
-      "Bash(powershell.exe -Command \"Stop-Process -Id 9448 -Force\")"
+      "Bash(powershell.exe -Command \"Stop-Process -Id 9448 -Force\")",
+      "Bash(go get:*)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 21672 -Force\")"
     ],
     "deny": [],
     "ask": []
