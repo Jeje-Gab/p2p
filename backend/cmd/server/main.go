@@ -142,24 +142,34 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		// HTTPS configuration
-		certFile := cfg.TLS.CertFile
-		keyFile := cfg.TLS.KeyFile
+		if cfg.TLS.Enabled {
+			// HTTPS configuration
+			certFile := cfg.TLS.CertFile
+			keyFile := cfg.TLS.KeyFile
 
-		// Check if certificates exist
-		if _, err := os.Stat(certFile); os.IsNotExist(err) {
-			log.Fatalf("[HTTPS] Certificate not found at '%s'. Generate with: cd backend/certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -config openssl.cnf", certFile)
-		}
-		if _, err := os.Stat(keyFile); os.IsNotExist(err) {
-			log.Fatalf("[HTTPS] Private key not found at '%s'. Generate with: cd backend/certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -config openssl.cnf", keyFile)
-		}
+			// Check if certificates exist
+			if _, err := os.Stat(certFile); os.IsNotExist(err) {
+				log.Fatalf("[HTTPS] Certificate not found at '%s'. Generate with: cd backend/certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -config openssl.cnf", certFile)
+			}
+			if _, err := os.Stat(keyFile); os.IsNotExist(err) {
+				log.Fatalf("[HTTPS] Private key not found at '%s'. Generate with: cd backend/certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -config openssl.cnf", keyFile)
+			}
 
-		log.Printf("[HTTPS] Server starting on port %s (TLS enabled)", cfg.HTTP.Port)
-		log.Printf("[HTTPS] Certificate: %s", certFile)
-		log.Printf("[HTTPS] Private Key: %s", keyFile)
+			log.Printf("[HTTPS] Server starting on port %s (TLS enabled)", cfg.HTTP.Port)
+			log.Printf("[HTTPS] Certificate: %s", certFile)
+			log.Printf("[HTTPS] Private Key: %s", keyFile)
 
-		if err := e.StartTLS(":"+cfg.HTTP.Port, certFile, keyFile); err != nil && err != http.ErrServerClosed {
-			log.Println("Server error:", err)
+			if err := e.StartTLS(":"+cfg.HTTP.Port, certFile, keyFile); err != nil && err != http.ErrServerClosed {
+				log.Println("Server error:", err)
+			}
+		} else {
+			// HTTP configuration (development only)
+			log.Printf("[HTTP] Server starting on port %s (TLS disabled - development mode)", cfg.HTTP.Port)
+			log.Printf("[WARNING] TLS is disabled. This should ONLY be used in development!")
+
+			if err := e.Start(":" + cfg.HTTP.Port); err != nil && err != http.ErrServerClosed {
+				log.Println("Server error:", err)
+			}
 		}
 	}()
 

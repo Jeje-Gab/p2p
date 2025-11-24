@@ -22,6 +22,7 @@ type HTTPConfig struct {
 }
 
 type TLSConfig struct {
+	Enabled  bool
 	CertFile string
 	KeyFile  string
 }
@@ -68,6 +69,7 @@ func Load() *Config {
 			CallbackURL: getenv("STEAM_CALLBACK_URL", "http://localhost:8080/api/auth/steam/callback"),
 		},
 		TLS: TLSConfig{
+			Enabled:  getenv("TLS_ENABLED", "false") == "true",
 			CertFile: getenv("TLS_CERT_FILE", "certs/server.crt"),
 			KeyFile:  getenv("TLS_KEY_FILE", "certs/server.key"),
 		},
